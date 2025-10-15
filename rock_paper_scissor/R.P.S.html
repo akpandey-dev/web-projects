@@ -1,0 +1,310 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors</title>
+    <style>
+body {
+    background-color: gainsboro;
+    color: darkslategrey;
+    border-style: solid;
+    border-width: 20px;
+}
+
+h1 {
+    justify-content: center;
+    text-align: center;
+    color: blue;
+    font-weight: bolder;
+    font-family: monospace;
+    font-size: xx-large;
+}
+
+/* Choice Images */
+#playerImage,
+#computerImage {
+    align-content: center;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    justify-items: center;
+    justify-self: center;
+    border-style: double;
+    border-color: darkorchid;
+    border-radius: 50%;
+    aspect-ratio: 1 - 1;
+    width: 90px;
+    height: 90px;
+    background-color: blue;
+}
+
+/* Containers */
+.choice-container{
+    display:flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    justify-items: center;
+    justify-self: center;
+    height: 100px;
+    width: 100px;
+}
+.button-container,
+.result-container {
+    align-content: center;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    justify-items: center;
+    justify-self: center;
+}
+
+.result-container {
+    align-items: center;
+    justify-content: center;
+    border-color: black;
+    border-style: dashed;
+    border-width: 5px;
+    box-sizing: border-box;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    overflow-wrap: break-word;
+}
+
+/* Footer Container */
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    bottom: 0;
+    width: 100%;
+    padding: 0;
+}
+
+/* Buttons */
+.action-btn {
+    height: 50px;
+    width: 50px;
+    padding: 3px;
+    background-color: aqua;
+    font-size: xx-large;
+}
+
+#resultText {
+    font: 700;
+    font-family: fantasy;
+    font-weight: 700;
+    font-style: italic;
+    text-align: center;
+    color: fuchsia;
+    background-color: aquamarine;
+}
+
+.info-btn {
+    padding: 8px;
+    border-radius: 50%;
+    border-style: solid;
+    border-color: black;
+    background-color: black;
+    color: white;
+    text-align: center;
+}
+
+/* Score & Credit Boxes */
+#scoreBox,
+#creditBox {
+    display: none;
+    background-color: whitesmoke;
+    border-style: solid;
+    border-color: black;
+    border-width: 2px;
+    align-items: center;
+    justify-content: center;
+    color: blueviolet;
+    border-radius: 5%;
+    width: 100%;
+    padding: 4px;
+}
+
+/* Wrappers */
+#scoreWrapper,
+#creditWrapper {
+    align-content: center;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    justify-items: center;
+    justify-self: center;
+}
+
+
+
+
+    </style>
+</head>
+<body>
+    <h1>Rock-Paper-Scissors Game</h1>
+
+    <!-- Player's Choice Display -->
+    <div class="choice-container">
+        <img id="playerImage" src="">
+    </div>
+
+    <!-- Result Display -->
+    <div class="result-container">
+        <p id="resultText"></p>
+    </div>
+
+    <!-- Computer's Choice Display -->
+    <div class="choice-container">
+        <img id="computerImage" src="">
+    </div>
+
+    <!-- Scorebox -->
+    <div id="scoreWrapper">
+        <div id="scoreBox">
+            <h3>Game Scores</h3>
+            <p id="playerScore">Player: 0</p>
+            <p id="computerScore">Computer: 0</p>
+            <p id="drawScore">Draw: 0</p>
+        </div>
+    </div>
+
+    <!-- Credits Box -->
+    <div id="creditWrapper">
+        <div id="creditBox">
+            <h3>Credits</h3>
+            <p>HTML + JS + CSS</p>
+            <p>Aman Kumar Pandey</p>
+        </div>
+    </div>
+
+    <!-- Player Buttons -->
+    <div class="button-container">
+        <button type="button" id="btnRock" class="action-btn" onclick="playRock()">🪨</button>
+        <button type="button" id="btnPaper" class="action-btn" onclick="playPaper()">📃</button>
+        <button type="button" id="btnScissors" class="action-btn" onclick="playScissors()">✂️</button>
+    </div>
+
+    <!-- Footer Buttons -->
+    <div class="footer-container">
+        <div class="footer-item">
+            <button type="button" class="info-btn" onclick="showCredits()" id="btnCredits">C</button>
+        </div>
+        <button type="button" class="action-btn" onclick="resetGame()">❌</button>
+        <div class="footer-item">
+            <button type="button" class="info-btn" onclick="showScores()" id="btnScores">S</button>
+        </div>
+    </div>
+
+    <!-- Audio -->
+    <audio id="audioWin" src="https://orangefreesounds.com/wp-content/uploads/2025/05/Victory-sound-effect.mp3" preload="auto"></audio>
+    <audio id="audioLose" src="https://www.orangefreesounds.com/wp-content/uploads/2017/11/Error-tone.mp3" preload="auto"></audio>
+    <audio id="audioDraw" src="https://orangefreesounds.com/wp-content/uploads/2024/04/Door-creaking-closed-sound-effect.mp3?_=1" preload="auto"></audio>
+
+    <script>
+
+
+let playerScore = 0;
+let computerScore = 0;
+let drawCount = 0;
+
+/* Update Score Display */
+function updateScoreDisplay() {
+    document.getElementById("playerScore").textContent = "Player: " + playerScore;
+    document.getElementById("computerScore").textContent = "Computer: " + computerScore;
+    document.getElementById("drawScore").textContent = "Draw: " + drawCount;
+}
+
+
+/* Show Credit Box */
+function showCredits() {
+    document.getElementById("creditBox").style.display = "block";
+}
+
+/* Show Score Box */
+function showScores() {
+    document.getElementById("scoreBox").style.display = "block";
+}
+
+/* Hide Boxes on Click Anywhere */
+document.addEventListener("pointerdown", function () {
+    document.getElementById("scoreBox").style.display = "none";
+    document.getElementById("creditBox").style.display = "none";
+});
+
+/* Reset Game */
+function resetGame() {
+    document.getElementById("playerImage").src = ''; // original base64
+    document.getElementById("computerImage").src = '';
+    document.getElementById("resultText").innerHTML = '';
+    document.getElementById("resultText").style.backgroundColor = '';
+    playerScore = 0;
+    computerScore = 0;
+    drawCount = 0;
+    updateScoreDisplay();
+}
+
+/* Play Functions */
+function playRock() {
+    playMove("rock");
+}
+
+function playPaper() {
+    playMove("paper");
+}
+
+function playScissors() {
+    playMove("scissors");
+}
+
+/* Main Game Logic */
+function playMove(playerChoice) {
+    const computerOptions = ["rock", "paper", "scissors"];
+    const computerChoice = computerOptions[Math.floor(Math.random() * 3)];
+
+    const imageMap = {
+        rock: "https://i.ibb.co/MxVb291f/imagesS.jpg",
+        paper: "https://i.ibb.co/1fT0CF3g/imagesP.jpg",
+        scissors: "https://i.ibb.co/1tT5djHZ/imagesSc.jpg"
+    };
+
+    document.getElementById("playerImage").src = imageMap[playerChoice];
+    document.getElementById("computerImage").src = imageMap[computerChoice];
+
+    let resultMessage = "";
+    let resultColor = "";
+
+    if (playerChoice === computerChoice) {
+        resultMessage = "IT'S A TIE!";
+        resultColor = "lightblue";
+        drawCount++;
+        document.getElementById("audioDraw").play();
+    } else if (
+        (playerChoice === "rock" && computerChoice === "scissors") ||
+        (playerChoice === "paper" && computerChoice === "rock") ||
+        (playerChoice === "scissors" && computerChoice === "paper")
+    ) {
+        resultMessage = "YOU WON!";
+        resultColor = "aquamarine";
+        playerScore++;
+        document.getElementById("audioWin").play();
+    } else {
+        resultMessage = "YOU LOST!";
+        resultColor = "red";
+        computerScore++;
+        document.getElementById("audioLose").play();
+    }
+
+    document.getElementById("resultText").innerHTML = resultMessage;
+    document.getElementById("resultText").style.backgroundColor = resultColor;
+    updateScoreDisplay();
+}
+
+    </script>
+</body>
+</html>

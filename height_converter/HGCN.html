@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Height Converter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <style>
+        /* Body and general styles */
+        body {
+            background-color: white;
+            color: chartreuse;
+            color-scheme: light dark;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-style: double;
+            border-width: 5px;
+            border-color: chartreuse;
+        }
+
+        h2 {
+            color: blue;
+            text-shadow: 4px 4px 0px gainsboro;
+            transition: all 0.1s ease-in-out;
+            font-weight: bold;
+            cursor: help;
+        }
+
+        /* Unit selectors */
+        #fromUnit, #toUnit {
+            color: blue;
+            background-color: chartreuse;
+            border-radius: 5vw;
+            text-align: center;
+            padding: 2px;
+            margin-top: 4%;
+            width: 40vw;
+            box-shadow: 4px 4px 0px #555;
+            transition: all 0.1s ease-in-out;
+            font-weight: bold;
+            cursor: help;
+        }
+
+        /* Wrapper containers */
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2%;
+        }
+
+        .inputWrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Input field */
+        .inputField {
+            height: 5vh;
+            width: 30vw;
+            background-color: chartreuse;
+            color: darkolivegreen;
+            border-radius: 30vw;
+            margin: 5% 3vh;
+            text-align: center;
+            box-shadow: 4px 4px 0px #555;
+            transition: all 0.1s ease-in-out;
+            font-weight: bold;
+            cursor: help;
+        }
+
+        /* Buttons */
+        .convertBtn {
+            height: 6vh;
+            background-color: chartreuse;
+            color: darkolivegreen;
+            border-radius: 30vw;
+            margin: 5% 3vh;
+            box-shadow: 4px 4px 0px #555;
+            transition: all 0.1s ease-in-out;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .clearBtn {
+            height: 9vh;
+            background-color: red;
+            color: black;
+            border-radius: 30vw;
+            margin: 5% 3vh;
+            box-shadow: 4px 4px 0px #555;
+            transition: all 0.1s ease-in-out;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Result field */
+        #resultField {
+            color: blue;
+            background-color: chartreuse;
+            border-radius: 5vw;
+            text-align: center;
+            box-shadow: 4px 4px 0px #555;
+            font-weight: bold;
+        }
+
+        /* Divider wrapper */
+        .dividerWrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-style: solid;
+            border-top: none;
+            border-bottom: none;
+            border-right-width: 8px;
+            border-left-width: 8px;
+        }
+
+        hr.divider {
+            color: chartreuse;
+            background-color: chartreuse;
+            border-width: 4px;
+            border-style: double;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mainWrapper">
+
+        <!-- Header -->
+        <div class="header">
+            <h2>HEIGHT</h2>
+            <h2>CONVERTER</h2>
+        </div>
+
+        <!-- Unit selectors -->
+        <div class="container">
+            <select id="fromUnit">
+                <option value="mm">Millimeters (mm)</option>
+                <option value="cm">Centimeters (cm)</option>
+                <option value="dm">Decimeters (dm)</option>
+                <option value="m">Meters (m)</option>
+                <option value="dam">Dekameters (dam)</option>
+                <option value="km">Kilometers (km)</option>
+                <option value="in">Inches (in)</option>
+                <option value="ft">Feet (ft)</option>
+                <option value="yd">Yards (yd)</option>
+            </select>
+            <select id="toUnit">
+                <option value="mm">Millimeters (mm)</option>
+                <option value="cm">Centimeters (cm)</option>
+                <option value="dm">Decimeters (dm)</option>
+                <option value="m">Meters (m)</option>
+                <option value="dam">Dekameters (dam)</option>
+                <option value="km">Kilometers (km)</option>
+                <option value="in">Inches (in)</option>
+                <option value="ft">Feet (ft)</option>
+                <option value="yd">Yards (yd)</option>
+            </select>
+        </div>
+
+        <!-- Input field -->
+        <div class="inputWrapper">
+            <input type="text" class="inputField" id="inputValue" placeholder="From.......">
+        </div>
+
+        <!-- Convert button -->
+        <div class="container">
+            <button class="convertBtn" onclick="convertHeight()">CONVERT</button>
+        </div>
+
+        <!-- Result field -->
+        <div class="container">
+            <input type="text" id="resultField" placeholder="THE RESULT IS..........." disabled>
+        </div>
+
+        <!-- Clear button with divider -->
+        <div class="dividerWrapper">
+            <hr class="divider">
+            <button class="clearBtn" onclick="clearFields()">Clear</button>
+            <hr class="divider">
+        </div>
+
+    </div>
+
+    <script>
+        // Clear input and result fields
+        function clearFields() {
+            document.getElementById("inputValue").value = '';
+            document.getElementById("resultField").value = '';
+        }
+
+        // Conversion factors to meters
+        const conversionToMeters = {
+            mm: 0.001,
+            cm: 0.01,
+            dm: 0.1,
+            m: 1,
+            dam: 10,
+            km: 1000,
+            in: 0.0254,
+            ft: 0.3048,
+            yd: 0.9144
+        };
+
+        // Convert height between units
+        function convertHeight() {
+            const inputVal = parseFloat(document.getElementById("inputValue").value);
+            const fromUnit = document.getElementById("fromUnit").value;
+            const toUnit = document.getElementById("toUnit").value;
+
+            let valueInMeters = inputVal * conversionToMeters[fromUnit];
+            let convertedValue = valueInMeters / conversionToMeters[toUnit];
+
+            document.getElementById("resultField").value = convertedValue.toFixed(4) + " " + toUnit;
+
+            // Error handling for invalid input
+            if (isNaN(inputVal)) {
+                const inputField = document.getElementById("inputValue");
+                const resultField = document.getElementById("resultField");
+                resultField.value = "Please enter a valid number...";
+                window.alert("Unknown Error Occurred");
+
+                // Reset result field after 1 second
+                setTimeout(() => { resultField.value = ''; }, 1000);
+
+                // Blink red effect
+                let blinkCount = 0;
+                const blinkInterval = setInterval(() => {
+                    inputField.style.backgroundColor = inputField.style.backgroundColor ? "" : "red";
+                    blinkCount++;
+                    if (blinkCount === 6) {
+                        clearInterval(blinkInterval);
+                        inputField.style.backgroundColor = '';
+                    }
+                }, 150);
+            }
+        }
+    </script>
+</body>
+</html>

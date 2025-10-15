@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A simple tip calculator to help you calculate tips based on bill amount, tip percentage, number of people, and service rating.">
+    <title>Tip Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 3vw;
+            max-width: 90vw;
+            overflow: hidden;
+            height: 90vh;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="number"], input[type="range"] {
+            width: 100%;
+            margin-top: 2px;
+        }
+        #result {
+            margin-top: 4vw;
+            padding: 3px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+
+        }
+
+        #RES_BTN{
+            background-color:dodgerblue;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .BTN_BOX {
+            display: flex;
+            justify-content: center;
+        }
+            .Insane {
+                text-align: center;
+            
+            }
+        
+
+                    #clearBtn {
+            position: fixed;
+            bottom: 20px;
+            right: 18px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #ff5252;
+            color: white;
+            border: none;
+            font-size: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            transition: background 0.2s;
+        }
+        #clearBtn:hover {
+            background: #e53935;
+        }
+    </style>
+</head>
+<body>
+  <div class="Insane">  <h2>Tip Calculator</h2></div>
+    <form>
+        <label for="billInput">Bill Amount (₹):</label>
+        <input type="number" id="billInput" min="0" step="0.01" placeholder="eg.500"><br><br>
+
+        <label for="tipInput">Tip Percentage (%):</label>
+        <input type="number" id="tipInput" min="0" step="1" placeholder="eg.10"><br><br>
+
+        <label for="peopleInput">Number of People: <span id="peopleCount"></span></label>
+        <input type="range" id="peopleInput" min="0" max="100" ><br><br>
+
+        <label for="ratingInput">Service Rating: <span id="ratingValue">0</span>/5</label>
+        <input type="range" id="ratingInput" min="0" max="5" ><br><br>
+
+       <div class="BTN_BOX"><button type="button" id="RES_BTN" onclick="calculateTip()">Calculate Tip</button></div>
+    </form>
+
+    <div id="result"></div>
+
+    <button id="clearBtn" title="Clear all" type="button">🧹</button>
+
+
+    <script>
+        const billInput = document.getElementById('billInput');
+        const tipInput = document.getElementById('tipInput');
+        const peopleInput = document.getElementById('peopleInput');
+        const ratingInput = document.getElementById('ratingInput');
+        const peopleCountDisplay = document.getElementById('peopleCount');
+        const ratingDisplay = document.getElementById('ratingValue');
+        const resultBox = document.getElementById('result');
+        
+        window.onload = () => {
+            // Set range inputs to their min values
+            peopleInput.value = peopleInput.min;
+            ratingInput.value = ratingInput.min;
+            // Update display values
+            peopleCountDisplay.textContent = peopleInput.value;
+            ratingDisplay.textContent = ratingInput.value;
+        };
+
+
+
+        // Live update for range inputs
+        peopleInput.addEventListener('input', () => {
+            peopleCountDisplay.textContent = peopleInput.value;
+        });
+
+        ratingInput.addEventListener('input', () => {
+            ratingDisplay.textContent = ratingInput.value;
+        });
+
+    function calculateTip() {
+    const billAmount = parseFloat(billInput.value) || 0;
+    const tipPercent = parseFloat(tipInput.value) || 0;
+    const numPeople = parseInt(peopleInput.value) || 1;
+    const serviceRating = parseInt(ratingInput.value) || 0;
+
+    // Adjust tip percent based on service rating (e.g., +2% per rating above 3)
+    let adjustedTipPercent = tipPercent;
+    if (serviceRating > 3) {
+        adjustedTipPercent += (serviceRating - 3) * 2;
+    }
+
+    const tipAmount = billAmount * (adjustedTipPercent / 100);
+    const totalAmount = billAmount + tipAmount;
+    const perPersonAmount = tipAmount / numPeople;
+
+    resultBox.innerHTML = `
+        <strong>Total Tip:</strong> ₹${tipAmount.toFixed(2)}<br>
+        <strong>Total Bill:</strong> ₹${totalAmount.toFixed(2)}<br>
+        <strong>Tip Per Person:</strong> ₹${perPersonAmount.toFixed(2)}<br>
+        <strong>Service Rating:</strong> ${serviceRating}⭐<br>
+        <strong>Adjusted Tip %:</strong> ${adjustedTipPercent}%
+    `;
+}
+
+  // Clear button logic
+        const clearBtn = document.getElementById('clearBtn');
+        clearBtn.addEventListener('click', () => {
+            billInput.value = '';
+            tipInput.value = '';
+            peopleInput.value = peopleInput.min;
+            ratingInput.value = ratingInput.min;
+            peopleCountDisplay.textContent = peopleInput.value;
+            ratingDisplay.textContent = ratingInput.value;
+            resultBox.innerHTML = '';
+        });
+    </script>
+      
+</body>`
+</html>

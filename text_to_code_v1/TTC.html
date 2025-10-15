@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEXT_TO_CODE</title>
+    <style>
+        body{
+            color: white;
+            background-color: black;
+            margin: 3px;
+            gap: 4vh;
+            font-family: "Fira Code", monospace;
+            overflow-y: hidden;
+        }
+.area{
+    resize: none;
+    height: 30vh;
+    width: 70vw;
+    border: 5px solid  rgba(2, 252, 2);
+    background-color: black;
+    margin-bottom: 6px;
+    color:  rgb(2, 252, 2);
+    caret-color: rgb(2, 252, 2);
+  
+    overflow-x: hidden;
+}
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+     border: 2px dashed rgba(2, 252, 2, 0.4);
+     padding: 1px;
+     margin-top: 10px;
+     box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+}
+#head{
+    color: rgb(2, 252, 2);
+    margin-bottom: 8px;
+}
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 1px;
+}
+
+.btn{
+    border: 2px solid  rgba(2, 252, 2);
+    background-color: black;
+    width: 20vw;
+    height: 3vh;
+    margin-bottom: 4px;
+    color: rgb(2, 252, 2);
+    font-size: clamp(9px , 0.8vw , 10px);
+    text-align: center;
+}
+
+.area, #head {
+  text-shadow: 0 0 1px #00ff00, 0 0 5px #00ff00;
+}
+
+
+.terminal-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  justify-content: flex-start;
+}
+
+.circle {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.red { background: #ff605c; }
+.yellow { background: #ffbd44; }
+.green { background: #00ca56; }
+
+.cursor {
+  animation: blink 1s steps(2, start) infinite;
+}
+
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+.output-wrapper {
+  position: relative;
+  width: 70vw;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 6px;
+  right: -4px;
+  background: black;
+  border: 1px solid rgb(2, 252, 2);
+  color: rgb(2, 252, 2);
+  padding: 2px 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  z-index: 2;
+  transition: all 0.2s ease;
+  text-shadow: 0 0 3px #00ff00;
+  border-bottom-left-radius: 20px;
+}
+
+.copy-btn:hover {
+  background: rgba(2, 252, 2, 0.1);
+  box-shadow: 0 0 6px rgba(2, 252, 2, 0.6);
+}
+
+.btnss {
+  border: 2px solid rgba(2, 252, 2);
+  background-color: black;
+  color: rgb(2, 252, 2);
+  font-size: clamp(10px, 0.9vw, 12px);
+  padding: 4px 10px;
+  text-align: center;
+  text-shadow: 0 0 2px #00ff00;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border-radius: 6px;
+  width: auto;
+}
+
+.btnss:hover {
+  background: rgba(2, 252, 2, 0.1);
+  box-shadow: 0 0 6px rgba(2, 252, 2, 0.6);
+}
+
+
+    </style>
+</head>
+<body>
+
+    <div class="terminal-bar">
+  <span class="circle red"></span>
+  <span class="circle yellow"></span>
+  <span class="circle green"></span>
+</div>
+
+
+<div class="container">
+    <span id="head">Text-Encoder+Decoder<span class="cursor">_</span></span>
+    <div class="output-wrapper">
+    <textarea id="decoded" class="area" placeholder="Enter your plain text here..."></textarea>
+    </div>
+
+    <div style="margin: 10px 0;">
+    <label for="mode" style="color: rgb(2, 252, 2); font-size: 0.9rem;">Encoder Type:</label>
+    <select id="mode" class="btn" style="width: auto; padding: 2px 6px;">
+    <option value="emoji">Emoji</option>
+    <option value="symbol" >Symbol</option>
+    <option value="customType">Custom</option>
+    
+    </select>
+    </div>
+
+    <div class="buttons"><button class="btn">Encode</button><button class="btn">Decode</button></div>
+    <div class="output-wrapper">
+    <textarea id="encoded" class="area" readonly></textarea>
+    <button class="copy-btn" onclick="copyEncoded()">⧉</button>
+    </div>
+
+    
+ <div class="buttons" style="justify-content: space-between; width: 70vw;">
+  <button class="btnss" onclick="clearAll()">🧹 Clear All</button>
+  <button class="btnss" onclick="goToCustom()">⚙️ Custom Maps</button>
+</div>
+</div>
+
+
+<!-- Hidden custom maps section -->
+<div id="custom-maps-page" style="display: none;">
+  <h2 style="color: rgb(2,252,2);">🎯 Custom Emoji Map Setup</h2>
+  <textarea id="custom-map" class="area" placeholder='{"a":"🔵","b":"🟣"}'></textarea>
+  <button class="btn" onclick="saveCustomMap()">💾 Save</button>
+  <button class="btn" onclick="goBack()">⬅️ Back</button>
+</div>
+
+
+    <script>
+
+         function clearAll() {
+    decodedArea.value = '';
+    encodedArea.value = '';
+  }
+
+  let customMap = {};
+
+  const emojiMap = {
+  a: "😎",
+  b: "😁",
+  c: "😂",
+  d: "🤣",
+  e: "😃",
+  f: "😄",
+  g: "😅",
+  h: "😆",
+  i: "😉",
+  j: "😊",
+  k: "😋",
+  l: "😀",
+  m: "😍",
+  n: "😘",
+  o: "😗",
+  p: "😙",
+  q: "😚",
+  r: "☺️",
+  s: "🙂",
+  t: "🤗",
+  u: "🤩",
+  v: "🤔",
+  w: "🤨",
+  x: "😐",
+  y: "😑",
+  z: "😶",
+  " ": "👽",
+  ".": "🔸",
+  ",": "🔹",
+  "?": "❓",
+  "!": "❗",
+  "(": "🅾️",
+  ")": "🅿️",
+  "[": "🪧",
+  "]": "🔲",
+  "{": "🧃",
+  "}": "🥤",
+  "'": "👈",
+  "\"": "👉",
+  "+": "➕",
+  "-": "➖",
+  "*": "✳️",
+  "/": "➗",
+  "=": "🟰",
+  "<": "⬅️",
+  ">": "➡️",
+  ":": "🔽",
+  ";": "🔼",
+  "@": "📧",
+  "#": "🔢",
+  "&": "🤝",
+  "%": "📊",
+  "|": "🚪",
+  "^": "⏫",
+  "~": "🌊",
+  "_": "⬛",
+  "₹": "💰",
+  "$": "💵",
+  "€": "💶",
+  "£": "💷",
+  "¥": "💴",
+  "\n": "🔁"
+};
+
+
+
+
+  const symbolMap = {
+    a: "@", b: "#", c: "$", d: "%", e: "&", f: "*", g: "!", h: "?", i: "+", j: "-",
+    k: "=", l: "/", m: "^", n: "~", o: "|", p: "<", q: ">", r: "[", s: "]", t: "{",
+    u: "}", v: "(", w: ")", x: ":", y: ";", z: "_"," ":"."
+  };
+  
+
+
+  const encodeBtn = document.querySelector(".buttons button:nth-child(1)");
+  const decodeBtn = document.querySelector(".buttons button:nth-child(2)");
+  
+  const decodedArea = document.getElementById("decoded");
+  const encodedArea = document.getElementById("encoded");
+  const modeSelector = document.getElementById("mode");
+
+
+
+// Text => Code => Compressed
+  encodeBtn.addEventListener("click", () => {
+  const mode = modeSelector.value;
+  const text = decodedArea.value.toLowerCase();
+
+  if (!text.trim()) {
+    encodedArea.value = "⚠️ Please enter text to encode.";
+    return;
+  }
+
+  let map;
+  if (mode === "emoji") {
+    map = emojiMap;
+  } else if (mode === "symbol") {
+    map = symbolMap;
+  } else {
+    // 🔥 Grab live custom map
+    map = customMap;
+if (Object.keys(map).length === 0) {
+  encodedArea.value = "❌ No custom map saved!";
+  return;
+}
+  }
+
+  const isEncoded = Object.values(map).some(symbol => text.includes(symbol));
+  if (isEncoded) {
+    encodedArea.value = "🔒 Text seems already encoded.";
+    return;
+  }
+
+  let encoded = "";
+  for (let char of text) {
+    encoded += map[char] || char;
+  }
+
+  encodedArea.value = encoded;
+});
+
+
+
+
+// Compressed => Code => Text
+decodeBtn.addEventListener("click", () => {
+  const mode = modeSelector.value;
+  const text = decodedArea.value;
+
+  if (!text.trim()) {
+    encodedArea.value = "⚠️ Please enter text to decode.";
+    return;
+  }
+
+  let map;
+  if (mode === "emoji") {
+    map = emojiMap;
+  } else if (mode === "symbol") {
+    map = symbolMap;
+  } else {
+    // 🔥 Use live custom map
+    map = customMap;
+if (Object.keys(map).length === 0) {
+  encodedArea.value = "❌ No custom map saved!";
+  return;
+}
+
+  }
+
+  const reverseMap = Object.fromEntries(Object.entries(map).map(([k, v]) => [v, k]));
+
+  const isDecoded = [...text.toLowerCase()].every(c => c >= 'a' && c <= 'z' || c === ' ' || c === '\n');
+  if (isDecoded) {
+    encodedArea.value = "🔓 Text seems already decoded.";
+    return;
+  }
+
+  let decoded = "";
+  for (let char of text) {
+    decoded += reverseMap[char] || char;
+  }
+
+  encodedArea.value = decoded;
+});
+
+
+
+
+
+
+  function copyEncoded() {
+    navigator.clipboard.writeText(encodedArea.value).then(() => {
+      alert("✅ Copied to clipboard!");
+    });
+  }
+
+  function goToCustom() {
+  document.querySelector('.container').style.display = 'none';
+  document.getElementById('custom-maps-page').style.display = 'block';
+
+  const mapToEdit = modeSelector.value === "emoji" ? emojiMap : symbolMap;
+  document.getElementById("custom-map").value = JSON.stringify(mapToEdit, null, 2);
+}
+
+function goBack() {
+  document.querySelector('.container').style.display = 'flex';
+  document.getElementById('custom-maps-page').style.display = 'none';
+}
+
+
+function saveCustomMap() {
+  const mapText = document.getElementById("custom-map").value;
+  try {
+    const parsedMap = JSON.parse(mapText);
+
+    // Save to global customMap variable
+    customMap = parsedMap;
+
+    alert("✅ Custom map saved!");
+  } catch (err) {
+    alert("❌ Invalid JSON format in map.");
+  }
+}
+
+modeSelector.addEventListener("change", () => {
+  const selected = modeSelector.value;
+  if (selected === "symbol") {
+    alert("⚠️ Warning: Symbol encoding doesn't support punctuation marks.");
+  }
+});
+
+
+document.addEventListener("keydown", (e) => {
+  if (e.ctrlKey && e.key.toLowerCase() === "e") {
+    encodeBtn.click();
+    e.preventDefault();
+  }
+  if (e.ctrlKey && e.key.toLowerCase() === "d") {
+    decodeBtn.click();
+    e.preventDefault();
+  }
+});
+ 
+  
+</script>
+
+</body>
+</html>

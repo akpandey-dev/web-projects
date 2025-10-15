@@ -1,0 +1,228 @@
+<!DOCTYPE HTML>
+    <html>
+        <head>
+            <title>Analogue Clock</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                
+body{
+    background-color: bisque;
+    display: flex;
+    height: 90vh;
+    margin: 10px;
+    justify-content: center;
+    align-items: center;
+      border-top-left-radius: 10vh;
+    border-bottom-right-radius: 10vh;
+    border-style: solid;
+    border-width: 10px;
+  
+}
+
+.rFrame{
+    border-style: solid;
+    border-width: 7px;
+    border-color: white;
+    border-radius: 50%;
+    height: 50vmin;
+    width: 50vmin;
+    padding: 5px;
+    background-color: #000;
+    position: relative;
+    box-shadow: 5px 5px 60vh rgba(1, 5, 255, 0.5);
+
+   
+
+}
+
+.rFrame:hover {
+    box-shadow: 0 0 20px 5px rgba(255, 0, 0, 0.5);
+    transform: scale(1.01);
+    transition: 0.3s ease-in-out;
+}
+
+
+.numbers{
+    position: absolute;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2em;
+    transform: translate(-50%, -50%);
+    
+}
+
+.dot{
+    position: absolute;
+    color: blueviolet;
+    background-color: red;
+    border-style: solid;
+    border-width: px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    width: 2vmin;
+    height: 2vmin;
+    top: 50%;
+    left: 50%;
+    border-color: white;
+    
+}
+
+.hand {
+    position: absolute;
+    width: 1%;
+    background: black;
+    top: 50%;
+    left: 50%;
+    transform-origin: bottom center;
+    transform: translate(-50%, -100%) rotate(0deg);
+    z-index: 5;
+}
+
+
+.hour {
+    height: 25%;
+    background: whitesmoke;
+    width: 7px;
+    border-top-left-radius: 45%;
+    border-top-right-radius: 45%;
+    
+    
+}
+
+.minute {
+    height: 33%;
+    background: whitesmoke;
+    width: 4px;
+    border-top-left-radius: 45%;
+    border-top-right-radius: 45%;
+}
+
+.second {
+    height: 38%;
+    background: red;
+    border-top-left-radius: 45%;
+    border-top-right-radius: 45%;
+    z-index: 10;
+}
+
+.aman {
+  position: absolute;
+  color: white;
+  background-color: black;
+  border-style: solid;
+  border-width: 0.3vh;
+  transform: translate(-50%, -50%);
+  z-index: 3; /* 👈 lower than z-index: 5 of the hands */
+  border-top-left-radius: 3vh;
+  border-bottom-right-radius: 3vh;
+  top: 30%;
+  left: 50%;
+  border-color: white;
+  padding: 0.6vh;
+  font-size: small;
+  cursor: pointer;
+}
+
+
+
+
+
+            </style>
+        </head>
+        <body>
+<!-- ⚠️ WARNING: DO NOT COPY ⚠️ -->
+<!-- 
+☠️ WARNING ☠️
+
+This project is protected by a digital curse.
+
+Any unauthorized duplication, copying, or stealing of code
+will trigger a chain reaction of glitches, crashes, and permanent bad luck.
+
+You’ve been warned. Turn back while you still can.
+
+Just Kidding! But seriously, please respect the effort that went into this code.
+-->
+
+<div class="rFrame" id="clock">
+      <div class="aman">
+        Aman
+      </div>
+
+<div class='dot'></div>
+             
+<div class="hand hour" id="hourHand"></div>
+<div class="hand minute" id="minuteHand"></div>
+<div class="hand second" id="secondHand"></div>
+
+</div>
+    
+
+<audio id="tickSound" src="https://raw.githubusercontent.com/jakesgordon/javascript-timer/master/tick.wav" preload="auto"></audio>
+
+        
+        
+        
+        
+        <script>
+
+
+
+
+ const clock = document.getElementById("clock");
+
+ for (i=1;i<=12;i++){
+    const angle = (i * 30) * Math.PI / 180;
+    const radius = 41; 
+    const number = document.createElement("div");
+    number.className = "numbers";
+    number.innerText = i;
+      const x = 50 + radius * Math.sin(angle);
+        const y = 50 - radius * Math.cos(angle);
+
+        number.style.left = `${x}%`;
+        number.style.top = `${y}%`;
+
+        clock.appendChild(number)
+ }
+
+function updateClock(){
+    const second = document.getElementById("secondHand");
+     const minute = document.getElementById("minuteHand");
+      const hour = document.getElementById("hourHand");
+
+    const now = new Date();
+    const sec = now.getSeconds();
+    const min = now.getMinutes();
+    const hr = now.getHours();
+
+
+const secDeg = sec * 6;               
+const minDeg = min * 6 + sec / 10; 
+const hourDeg = (hr % 12) * 30 + min / 2;
+
+second.style.transform = `translate(-50%, -100%) rotate(${secDeg}deg)` ;
+
+minute.style.transform = `translate(-50%, -100%) rotate(${minDeg}deg)`;
+
+hour.style.transform = `translate(-50%, -100%) rotate(${hourDeg}deg)`;
+
+ 
+
+
+
+
+}
+
+setInterval(updateClock,100);
+updateClock()
+
+
+console.warn("%c☠️ WARNING ☠️\n\nAny attempt to copy or modify this code\nwill unleash digital doom.\n\nProceed at your own risk.",
+  "color: red; font-size: 20px; font-weight: bold; background: black; padding: 10px;");
+
+
+        </script>
+        </body>
+    </html>

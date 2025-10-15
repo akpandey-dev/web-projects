@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>New Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        h1 {
+            font-size: xx-large;
+            font-style: oblique;
+            font-family: sans-serif;
+            color: black;
+            align-items: center;
+            text-align: center;
+        }
+
+        #screen {
+            color: white;
+            border-color: white;
+            border-radius: 0px;
+            border-width: 3px;
+            border-style:solid;
+            background-color: black;
+            box-shadow: 2px;
+            width: 350px;
+            text-align: right;
+            padding: 10px;
+            font-size: xx-large;
+            box-sizing: content-box;
+            margin: 0;
+            border-bottom: 6px;
+        }
+
+        #btnEqual {
+            margin-top: 3.28px;
+            margin-bottom: 3.28px;
+            margin-left: 3.28px;
+            margin-right: 3.28px ;
+            color: ghostwhite;
+            background-color:dodgerblue;
+            border-color: ivory;
+            border-style: solid;
+            border-radius: 5px;
+            padding: 24px;
+            font-size: 24px;
+            text-align: center;
+            min-height: 50px;
+            min-width: 50px;
+        }
+
+        #btnAllClear {
+            margin-top: 3.28px;
+            margin-bottom: 3.28px;
+            margin-left: 3.28px;
+            margin-right: 3.28px ;
+            color: ghostwhite;
+            background-color: red;
+            border-color: ivory;
+            border-style: solid;
+            border-radius: 5px;
+            padding: 24px;
+            font-size: 24px;
+            text-align: center;
+            min-height: 50px;
+            min-width: 50px;
+        }
+
+        body {
+            background-color:darkgrey;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .gridButtons {
+            background-color: black;
+            border: 3px;
+            border-color: white;
+            border-style: solid;
+            display: grid;
+            grid-template-columns: repeat(4, 80px);
+            gap: 10px;
+            padding: 10px;
+            justify-content: center;
+            margin-top: 0;
+            box-sizing: border-box;
+        }
+
+        .calcBtn {
+            margin-top: 3.28px;
+            margin-bottom: 3.28px;
+            margin-left: 3.28px;
+            margin-right: 3.28px ;
+            color: ghostwhite;
+            background-color: black;
+            border-color: ivory;
+            border-style: solid;
+            border-radius: 5px;
+            padding: 24px;
+            font-size: 24px;
+            text-align: center;
+            min-height: 50px;
+            min-width: 50px;
+        }
+
+        #btnPercent { color: greenyellow; background-color: black; border-color: ivory; border-style: solid; border-radius: 5px; padding: 24px; font-size: 24px; text-align: center; min-height: 50px; min-width: 50px;}
+        #btnOpen { color: greenyellow; background-color: black; border-color: ivory; border-style: solid; border-radius: 5px; padding: 24px; font-size: 24px; text-align: center; min-height: 50px; min-width: 50px;}
+        #btnClose { color: greenyellow; background-color: black; border-color: ivory; border-style: solid; border-radius: 5px; padding: 24px; font-size: 24px; text-align: center; min-height: 50px; min-width: 50px;}
+        #btnDivide { color: greenyellow; background-color: black; border-color: ivory; border-style: solid; border-radius: 5px; padding: 24px; font-size: 24px; text-align: center; min-height: 50px; min-width: 50px;}
+        #btnMultiply { color: greenyellow; background-color: black; border-color: ivory; border-style: solid; border-radius: 5px; padding: 24px; font-size: 24px; text-align: center; min-height: 50px; min-width: 50px;}
+        #btnMinus { color: greenyellow; background-color: black; border-color: ivory; border-style: solid; border-radius: 5px; padding: 24px; font-size: 24px; text-align: center; min-height: 50px; min-width: 50px;}
+        #btnPlus { color: greenyellow; background-color: black; border-color: ivory; border-style: solid; border-radius: 5px; padding: 24px; font-size: 24px; text-align: center; min-height: 50px; min-width: 50px;}
+
+        .calculatorContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 40px;
+            border-color: black;
+            border-style: solid;
+            border-radius: 0px;
+            margin-left: 0px;
+            margin-right: 0px;
+            box-sizing: border-box;
+            width: min-content;
+        }
+
+        .displayContainer { justify-self: center; }
+
+        .outerWrapper { text-align: center; justify-content: center; display: flex; }
+    </style>
+</head>
+<body bgcolor="lightyellow">
+   
+<div class="outerWrapper">
+    <div class="calculatorContainer">
+        <div class="displayContainer">
+              <input type="text" id="screen" disabled />
+        </div>
+        <div class="gridButtons">
+            <button type="button" onclick="addToCalc('%')" id="btnPercent" class="calcBtn">%</button>
+            <button type="button" onclick="addToCalc('(')" id="btnOpen" class="calcBtn">(</button>
+            <button type="button" onclick="addToCalc(')')" id="btnClose" class="calcBtn">)</button>
+            <button type="button" onclick="addToCalc('/')" id="btnDivide" class="calcBtn">/</button>
+
+            <button type="button" onclick="addToCalc('1')" class="calcBtn">1</button>
+            <button type="button" onclick="addToCalc('2')" class="calcBtn">2</button>
+            <button type="button" onclick="addToCalc('3')" class="calcBtn">3</button>
+            <button type="button" onclick="addToCalc('*')" id="btnMultiply" class="calcBtn">*</button>
+
+            <button type="button" onclick="addToCalc('4')" class="calcBtn">4</button>
+            <button type="button" onclick="addToCalc('5')" class="calcBtn">5</button>
+            <button type="button" onclick="addToCalc('6')" class="calcBtn">6</button>
+            <button type="button" onclick="addToCalc('-')" id="btnMinus" class="calcBtn">-</button>
+
+            <button type="button" onclick="addToCalc('7')" class="calcBtn">7</button>
+            <button type="button" onclick="addToCalc('8')" class="calcBtn">8</button>
+            <button type="button" onclick="addToCalc('9')" class="calcBtn">9</button>
+            <button type="button" onclick="addToCalc('+')" id="btnPlus" class="calcBtn">+</button>
+
+            <button type="button" onclick="clearCalc()" id="btnAllClear" class="calcBtn">AC</button>
+            <button type="button" onclick="addToCalc('0')" class="calcBtn">0</button>
+            <button type="button" onclick="addToCalc('.')" class="calcBtn">.</button>
+            <button type="button" onclick="calculate()" id="btnEqual" class="calcBtn">=</button>
+        </div>
+    </div>
+ </div>
+
+<script>
+    function addToCalc(value) {
+        document.getElementById('screen').value += value;
+    }
+
+    function calculate() {
+        const scr = document.getElementById('screen');
+        try {
+            const result = eval(scr.value);
+            scr.value = result;
+            scr.style.color = '#ADD8E6';
+        } catch (e) {
+            scr.value = 'Error';
+            scr.style.color = 'white';
+        }
+    }
+
+    function clearCalc() {
+        const scr = document.getElementById('screen');
+        scr.value = '';
+        scr.style.color = 'white';
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Coin Toss Simulator</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <style>
+        body {
+            display: flexbox;
+            background-color: #0cff00;
+            font-family: monospace;
+            font-size: x-large;
+            border-style: ridge;
+            border-color: darkolivegreen;
+            border-width: 20px;
+        }
+
+        .center-container {
+            align-items: center;
+            justify-content: center;
+            align-content: center;
+            justify-items: center;
+            align-self: center;
+            justify-self: center;
+        }
+
+        #coinImage {
+            height: 20vh;
+            width: 25vh;
+        }
+
+        #resultText {
+            transition: color 0.8s ease, font-family 0.5s ease;
+        }
+
+        #tossBtn, #resetBtn {
+            height: 5vh;
+            width: 60vw;
+            background-color: #0cff00;
+            color: blue;
+            border-style: solid;
+            border-color: #0cff98;
+            border-radius: 100px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .action-container,
+        .reset-container {
+            align-self: center;
+            justify-self: center;
+            align-items: center;
+            align-content: center;
+            justify-items: center;
+            justify-content: center;
+        }
+
+        .coin-frame {
+            border-style: solid;
+            border-color: brown;
+            border-radius: 50%;
+            border-width: 7px;
+        }
+
+        .input-section {
+            margin-top: 50px;
+            align-items: baseline;
+            gap: 3px;
+            justify-content: center;
+            display: flex;
+        }
+
+        .status-section {
+            margin-top: 0px;
+            align-items: baseline;
+            gap: 3px;
+            justify-content: center;
+            display: flex;
+            font-family: monospace;
+            color: red;
+        }
+
+        #headsInput,
+        #tailsInput {
+            font-family: monospace;
+            color: orangered;
+            background-color: yellow;
+            border-style: none;
+            border-width: 0px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="center-container">
+        <h1>LET'S TOSS</h1>
+        <div class="coin-display">
+            <img id="coinImage" class="coin-frame"
+                src="https://i.ytimg.com/vi/IegTINMrhXE/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDEkxREAMyAzjJIAu16swOT2MFGPQ">
+        </div>
+    </div>
+
+    <div class="action-container">
+        <p id="resultText">...</p>
+        <button id="tossBtn" type="button" onclick="handleToss()">TOSS</button>
+    </div>
+
+    <div class="reset-container">
+        <button id="resetBtn" type="button" onclick="handleReset()">RESET</button>
+    </div>
+
+    <div class="input-section">
+        <input id="headsInput" placeholder="HEADS">
+        <input id="tailsInput" placeholder="TAILS">
+    </div>
+
+    <div class="status-section">
+        <p id="winnerText">__________</p>
+    </div>
+
+    <script>
+        function handleReset() {
+            const resetButton = document.getElementById("resetBtn");
+            const resultDisplay = document.getElementById("resultText");
+            const coinImg = document.getElementById("coinImage");
+
+            resetButton.style.backgroundColor = "#FF9999";
+            setTimeout(() => resetButton.style.backgroundColor = "", 500);
+
+            resultDisplay.innerHTML = "...";
+            resultDisplay.style.color = "blue";
+            coinImg.src = "https://i.ytimg.com/vi/IegTINMrhXE/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDEkxREAMyAzjJIAu16swOT2MFGPQ";
+
+            document.getElementById("headsInput").value = '';
+            document.getElementById("tailsInput").value = '';
+            document.getElementById("winnerText").innerHTML = '__________';
+        }
+
+        function handleToss() {
+            const tossButton = document.getElementById("tossBtn");
+            const resultDisplay = document.getElementById("resultText");
+            const coinImg = document.getElementById("coinImage");
+
+            tossButton.style.backgroundColor = "#0cff98";
+            coinImg.src = "https://www.shutterstock.com/image-vector/hand-tossing-gold-coin-vector-600nw-2246715561.jpg";
+            setTimeout(() => tossButton.style.backgroundColor = "", 500);
+
+            setTimeout(() => {
+                const tossResult = Math.floor(Math.random() * 2);
+                const headName = document.getElementById("headsInput").value;
+                const tailName = document.getElementById("tailsInput").value;
+                const winnerDisplay = document.getElementById("winnerText");
+
+                if (tossResult === 1) {
+                    coinImg.src = "https://i.pinimg.com/736x/df/e7/34/dfe734cfa015acd356bac207f49ed5fc.jpg";
+                    resultDisplay.innerHTML = "TAILS WON!";
+                    winnerDisplay.innerHTML = "WINNER IS " + tailName;
+                } else {
+                    coinImg.src = "https://thumbs.dreamstime.com/b/india-one-rupee-coin-white-isolated-background-231225188.jpg";
+                    resultDisplay.innerHTML = "HEADS WON!";
+                    winnerDisplay.innerHTML = "WINNER IS " + headName;
+                }
+
+                const r = Math.floor(Math.random() * 256);
+                const g = Math.floor(Math.random() * 256);
+                const b = Math.floor(Math.random() * 256);
+                const rgb = `rgb(${r}, ${g}, ${b})`;
+                resultDisplay.style.color = rgb;
+
+            }, 1000);
+        }
+    </script>
+
+</body>
+</html>

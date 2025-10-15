@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Age Calculator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: sans-serif;
+      background: #fafafa;
+    }
+
+    .border-box {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 4vh 5vw;
+      background: #fff;
+      border: 2vh solid black;
+    }
+
+    .head {
+      background: black;
+      color: white;
+      text-align: center;
+      padding: 2vh;
+    }
+
+    #heading {
+      font-size: clamp(1.4rem, 3vw, 2rem);
+    }
+
+    .dates {
+      padding: 2vh 0;
+      text-align: center;
+    }
+
+    .newhd {
+      font-size: clamp(1rem, 2.5vw, 1.5rem);
+      color: blueviolet;
+      margin-top: 2vh;
+    }
+
+    .nowdate {
+      margin: 1vh 0;
+    }
+
+    .datehere {
+      width: 100%;
+      max-width: 400px;
+      height: 5vh;
+      border-radius: 5vh;
+      padding: 0 1rem;
+      text-align: center;
+      color: white;
+      background-color: fuchsia;
+      border: none;
+      font-size: 1rem;
+            border-style: solid;
+      border-color: black;
+
+        text-align-last: center;
+  -webkit-appearance: none;
+  appearance: none;
+    }
+
+    #calcbtn, #clearbtn {
+      max-width: 400px;
+      margin: 2vh auto;
+      padding: 1vh;
+      border-radius: 5vh;
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      cursor: pointer;
+      transition: 0.3s ease;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      border: none;
+      border-style: solid;
+      border-color: black;
+    }
+
+    #calcbtn {
+      background-color: rgb(25, 208, 25);
+      color: white;
+      width: 60%;
+      
+    }
+
+    #calcbtn:hover, #clearbtn:hover {
+      transform: translateY(-3px);
+      box-shadow: 5px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    #clearbtn {
+      background-color: crimson;
+      display: none;
+     
+    }
+
+    .resulted {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4vh;
+      margin-top: 4vh;
+      align-items: center;
+    }
+
+    .res {
+      width: 100%;
+      max-width: 500px;
+      background: white;
+      color: black;
+      padding: 2vh;
+      text-align: center;
+      border-radius: 2vh;
+      border: 2px solid #000;
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+    }
+
+    @media (orientation: landscape) and (max-height: 500px) {
+      .border-box {
+        padding: 2vh 3vw;
+        border-width: 1.5vh;
+      }
+
+      .res {
+        font-size: clamp(0.9rem, 2vw, 1rem);
+      }
+
+      #calcbtn, #clearbtn, .datehere {
+        font-size: clamp(0.9rem, 2vw, 1rem);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="border-box">
+    <div class="head">
+      <h2 id="heading">Age-Calculator</h2>
+    </div>
+
+    <div class="dates">
+      <h2 class="newhd">Current Date</h2>
+      <div class="nowdate">
+        <input type="date" class="datehere" id="crnt">
+      </div>
+
+      <h2 class="newhd">Birth-Date</h2>
+      <div class="nowdate">
+        <input type="date" class="datehere" id="new">
+      </div>
+
+      <button id="calcbtn">Calculate</button>
+      <br>
+      <button id="clearbtn">Clear</button>
+    </div>
+
+    <div class="resulted">
+      <div class="res" id="result">Birth-Date</div>
+      <div class="res" id="res2">Age</div>
+    </div>
+  </div>
+
+  <script>
+    // Autofill today’s date
+    window.addEventListener("DOMContentLoaded", () => {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      document.getElementById("crnt").value = `${yyyy}-${mm}-${dd}`;
+    });
+
+    document.getElementById("calcbtn").addEventListener("click", function () {
+      const currentInput = document.getElementById("crnt").value;
+      const birthInput = document.getElementById("new").value;
+
+      const currentDate = new Date(currentInput);
+      const birthDate = new Date(birthInput);
+
+      const resultBox = document.getElementById("result");
+      const res2Box = document.getElementById("res2");
+      const clearBtn = document.getElementById("clearbtn");
+
+      if (!currentInput || !birthInput || isNaN(currentDate) || isNaN(birthDate)) {
+        resultBox.textContent = "⚠️ Please select both dates.";
+        res2Box.textContent = "";
+        clearBtn.style.display = "inline-block";
+        return;
+      }
+
+      if (birthDate > currentDate) {
+        resultBox.textContent = "⚠️ Birthdate can't be after current date.";
+        res2Box.textContent = "";
+        document.getElementById("calcbtn").style.backgroundColor = "red";
+        document.body.style.backgroundColor = "red";
+        setTimeout(() => {
+          document.getElementById("calcbtn").style.backgroundColor = '';
+          document.body.style.backgroundColor = '';
+        }, 200);
+        clearBtn.style.display = "inline-block";
+        return;
+      }
+
+      resultBox.textContent = `📅 You were born on: ${birthDate.toDateString()}`;
+
+      let years = currentDate.getFullYear() - birthDate.getFullYear();
+      let months = currentDate.getMonth() - birthDate.getMonth();
+      let days = currentDate.getDate() - birthDate.getDate();
+
+      if (days < 0) {
+        months--;
+        const prevMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
+        days += prevMonth.getDate();
+      }
+
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+
+      let ageParts = [];
+      if (years > 0) ageParts.push(`${years} year${years > 1 ? "s" : ""}`);
+      if (months > 0) ageParts.push(`${months} month${months > 1 ? "s" : ""}`);
+      if (days > 0) ageParts.push(`${days} day${days > 1 ? "s" : ""}`);
+
+      if (ageParts.length === 0) {
+        res2Box.textContent = "🎉 Born today!";
+      } else {
+        res2Box.textContent = `🎂 Age: ${ageParts.join(" ")}`;
+      }
+
+      clearBtn.style.display = "inline-block";
+    });
+
+    document.getElementById("clearbtn").addEventListener("click", () => {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+
+      document.getElementById("crnt").value = `${yyyy}-${mm}-${dd}`;
+      document.getElementById("new").value = "";
+      document.getElementById("result").textContent = "Birth-Date";
+      document.getElementById("res2").textContent = "Age";
+      document.getElementById("clearbtn").style.display = "none";
+    });
+  </script>
+</body>
+</html>
