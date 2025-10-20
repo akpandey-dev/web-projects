@@ -6,3 +6,4 @@ Current project count:
 
  * toss -> toss.html
  * calculator -> calculator.html
+ * rps -> rps.html
