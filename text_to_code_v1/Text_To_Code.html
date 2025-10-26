@@ -44,6 +44,8 @@
   justify-content: center;
   gap: 10px;
   margin-bottom: 1px;
+  justify-content: space-between;
+   width: 70vw;
 }
 
 .btn{
@@ -55,6 +57,8 @@
     color: rgb(2, 252, 2);
     font-size: clamp(9px , 0.8vw , 10px);
     text-align: center;
+    width: auto;
+    padding: 2px 6px;
 }
 
 .area, #head {
@@ -134,8 +138,9 @@
   background: rgba(2, 252, 2, 0.1);
   box-shadow: 0 0 6px rgba(2, 252, 2, 0.6);
 }
-
-
+.mode-div { margin: 10px 0; }
+.Label-For-Mode { color: rgb(2, 252, 2); font-size: 0.9rem; }
+#custom-maps-page { display: none; }
     </style>
 </head>
 <body>
@@ -153,9 +158,9 @@
     <textarea id="decoded" class="area" placeholder="Enter your plain text here..."></textarea>
     </div>
 
-    <div style="margin: 10px 0;">
-    <label for="mode" style="color: rgb(2, 252, 2); font-size: 0.9rem;">Encoder Type:</label>
-    <select id="mode" class="btn" style="width: auto; padding: 2px 6px;">
+    <div class="mode-div">
+    <label for="mode" class="Label-For-Mode">Encoder Type:</label>
+    <select id="mode" class="btn">
     <option value="emoji">Emoji</option>
     <option value="symbol" >Symbol</option>
     <option value="customType">Custom</option>
@@ -163,26 +168,26 @@
     </select>
     </div>
 
-    <div class="buttons"><button class="btn">Encode</button><button class="btn">Decode</button></div>
+    <div class="buttons"><button type="button" class="btn">Encode</button><button type="button" class="btn">Decode</button></div>
     <div class="output-wrapper">
-    <textarea id="encoded" class="area" readonly></textarea>
-    <button class="copy-btn" onclick="copyEncoded()">⧉</button>
+    <textarea title="Text-area" id="encoded" class="area" readonly></textarea>
+    <button type="button" class="copy-btn" onclick="copyEncoded()">⧉</button>
     </div>
 
     
- <div class="buttons" style="justify-content: space-between; width: 70vw;">
-  <button class="btnss" onclick="clearAll()">🧹 Clear All</button>
-  <button class="btnss" onclick="goToCustom()">⚙️ Custom Maps</button>
+ <div class="buttons">
+  <button type="button" class="btnss" onclick="clearAll()">🧹 Clear All</button>
+  <button type="button" class="btnss" onclick="goToCustom()">⚙️ Custom Maps</button>
 </div>
 </div>
 
 
 <!-- Hidden custom maps section -->
-<div id="custom-maps-page" style="display: none;">
-  <h2 style="color: rgb(2,252,2);">🎯 Custom Emoji Map Setup</h2>
+<div id="custom-maps-page">
+  <h2>🎯 Custom Emoji Map Setup</h2>
   <textarea id="custom-map" class="area" placeholder='{"a":"🔵","b":"🟣"}'></textarea>
-  <button class="btn" onclick="saveCustomMap()">💾 Save</button>
-  <button class="btn" onclick="goBack()">⬅️ Back</button>
+  <button type="button" class="btn" onclick="saveCustomMap()">💾 Save</button>
+  <button type="button" class="btn" onclick="goBack()">⬅️ Back</button>
 </div>
 
 

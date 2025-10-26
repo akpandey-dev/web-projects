@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8" />
     <title>THE NUMBER GUESSING !</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -131,7 +132,7 @@ h1 {
         <div class="numberBox">
             <p id="instructions">GUESS A NUMBER BETWEEN <span class="highlightMin">1</span> AND <span class="highlightMax">10</span>.</p><br>
 
-            <input id="inputField" type="number" class="inputBox"><br>
+            <input placeholder="Type..." id="inputField" type="number" class="inputBox"><br>
             <button type="submit" id="submitBtn" class="actionBtn" onclick="checkNumber()">SUBMIT</button>
             <p id="resultDisplay">...</p><br>
             <button type="button" id="retryBtn" onclick="resetGame()">Try Again</button>

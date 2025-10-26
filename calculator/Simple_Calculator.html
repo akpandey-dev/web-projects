@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8" />
     <title>New Calculator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -131,12 +132,12 @@
         .outerWrapper { text-align: center; justify-content: center; display: flex; }
     </style>
 </head>
-<body bgcolor="lightyellow">
+<body>
    
 <div class="outerWrapper">
     <div class="calculatorContainer">
         <div class="displayContainer">
-              <input type="text" id="screen" disabled />
+              <input placeholder="0" type="text" id="screen" disabled />
         </div>
         <div class="gridButtons">
             <button type="button" onclick="addToCalc('%')" id="btnPercent" class="calcBtn">%</button>
