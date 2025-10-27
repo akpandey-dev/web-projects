@@ -1,19 +1,23 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-    <title>Coin Toss Simulator</title>
     <meta charset="UTF-8" />
+    <title>Coin Toss Simulator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <style>
         body {
-            display: flexbox;
+            display: flex;
+            flex-direction: column;
             background-color: #0cff00;
             font-family: monospace;
             font-size: x-large;
             border-style: ridge;
             border-color: darkolivegreen;
             border-width: 20px;
+            height: 90vh;
+            overflow-y: hidden;
+            overflow-x: auto;
         }
 
         .center-container {
@@ -24,7 +28,9 @@
             align-self: center;
             justify-self: center;
         }
-
+        h1{
+            font-size: medium;
+        }
         #coinImage {
             height: 20vh;
             width: 25vh;
@@ -78,7 +84,7 @@
             justify-content: center;
             display: flex;
             font-family: monospace;
-            color: red;
+            color: #0cff00;
         }
 
         #headsInput,
@@ -88,6 +94,21 @@
             background-color: yellow;
             border-style: none;
             border-width: 0px;
+            height: 5vh;
+            width: clamp(25vw, 30vw, 35vw);
+            border-bottom-left-radius: 5vw;
+            border-top-right-radius: 5vw;
+            text-align: center;
+            cursor: pointer;
+            caret-color: black;
+             transition: background-color 0.3s ease, transform 0.2s ease;
+            appearance: none;
+            outline: none;
+        }
+        .nameInput:hover {
+            z-index: 1;
+            background: linear-gradient(135deg, white, black) !important;
+            box-shadow: 5px 5px 5px black;
         }
     </style>
 </head>
@@ -112,8 +133,8 @@
     </div>
 
     <div class="input-section">
-        <input id="headsInput" placeholder="HEADS">
-        <input id="tailsInput" placeholder="TAILS">
+        <input id="headsInput" class="nameInput" placeholder="HEADS">
+        <input id="tailsInput" class="nameInput" placeholder="TAILS">
     </div>
 
     <div class="status-section">
@@ -136,6 +157,7 @@
             document.getElementById("headsInput").value = '';
             document.getElementById("tailsInput").value = '';
             document.getElementById("winnerText").innerHTML = '__________';
+            document.getElementById("winnerText").style.color = '#0cff00';
         }
 
         function handleToss() {
@@ -149,18 +171,28 @@
 
             setTimeout(() => {
                 const tossResult = Math.floor(Math.random() * 2);
-                const headName = document.getElementById("headsInput").value;
-                const tailName = document.getElementById("tailsInput").value;
+                let headName = document.getElementById("headsInput").value;
+                let tailName = document.getElementById("tailsInput").value;
                 const winnerDisplay = document.getElementById("winnerText");
 
                 if (tossResult === 1) {
                     coinImg.src = "https://i.pinimg.com/736x/df/e7/34/dfe734cfa015acd356bac207f49ed5fc.jpg";
                     resultDisplay.innerHTML = "TAILS WON!";
-                    winnerDisplay.innerHTML = "WINNER IS " + tailName;
+                    if(document.getElementById("tailsInput").value.trim() === ""){
+                        tailName="TAILS";
+                    }   
+                    winnerDisplay.innerHTML = "WINNER IS " + tailName.toUpperCase();
+                    winnerDisplay.style.color = "red";
+
                 } else {
                     coinImg.src = "https://thumbs.dreamstime.com/b/india-one-rupee-coin-white-isolated-background-231225188.jpg";
                     resultDisplay.innerHTML = "HEADS WON!";
-                    winnerDisplay.innerHTML = "WINNER IS " + headName;
+                    if(document.getElementById("headsInput").value.trim() === ""){
+                        headName ="HEADS";
+                    }
+                    winnerDisplay.innerHTML = "WINNER IS " + headName.toUpperCase();
+                    winnerDisplay.style.color = "green";
+
                 }
 
                 const r = Math.floor(Math.random() * 256);
