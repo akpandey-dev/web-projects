@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Universal Player</title>
+<meta name="viewport" content="width=device-width">
+<style>
+    :root{
+        background-color:rgb(75, 68, 68);
+        color: white;
+        border: none;
+    }
+  #playbox {
+    width: 400px;
+    height: 300px;
+    border: 2px dashed black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    background:linear-gradient(90deg, black, white);
+    width: 100%;
+    height: 60vh;
+    transition: background 0.5s, color 0.5s;
+  }
+  #playbox:hover{
+    color:blueviolet;
+}
+  input, button {
+    margin: 5px;
+  }
+  .highlight{
+    font-weight: bold;
+    color: orange;
+  }
+  #heading{
+    font-size: 24px;
+    text-align: center;
+    margin-top: 10px;
+  }
+  .searchTools{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+  }
+  #mediaURL{
+    width: 70%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    height: 5vh;
+    flex-grow: 1;
+  }
+  #URLbtn{
+    height: 5.5vh;
+    border-radius: 5px;
+    border: none;
+    background-color: orange;
+    color: white;
+    cursor: pointer;
+    flex-grow: 2;
+  }
+  #URLbtn:hover{
+    background-color: darkorange;
+  }
+  .moreTools{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-y: hidden;
+    overflow-x: auto;
+  }
+  #vanishBtn{
+    background-color: black;
+    color: aliceblue;
+    flex-grow: 1;
+    width: 30%;
+  }
+  #downBtn{
+    background-color: black;
+    color: aliceblue;
+    flex-grow: 1; 
+    width: 30%;
+     }
+  #clearBtn{
+    background-color: black;
+    color: aliceblue;
+    flex-grow: 1; 
+    width: 30%;
+     }
+     .toolBtn{
+        margin: 5px;
+        height: 5vh;
+        padding: 2px;
+        border: 0px solid black;
+        border-top-left-radius: 4vw;
+        border-bottom-right-radius: 4vw;
+        cursor: pointer;
+        box-shadow: 1px 4px 1px white;
+     }
+     .toolBtn:hover {
+      box-shadow: 1px 1px 1px white;
+      margin-top:6px;
+     }
+</style>
+</head>
+<body>
+<div class="full-container">
+
+<div id="heading"><p><span class="highlight">Workshop</span> - A URL Player</p></div>
+<div class="searchTools">
+<input type="text" id="mediaURL" placeholder="Enter media URL">
+<button type="button" id="URLbtn" onclick="playMedia()">🔎</button>
+</div>
+
+<div id="playbox">Media will appear here</div>
+
+<div class="moreTools">
+    <button type="button" class="toolBtn" id="vanishBtn" onclick="window.location.href='Vanish.html'">👻</button>
+    <button type="button" class="toolBtn" id="downBtn" onclick="downloadFunc()">💾</button>
+    <button type="button" class="toolBtn" id="clearBtn" onclick="clearFunc()">❌</button>
+</div>
+
+
+
+
+
+
+</div>
+<script>
+function playMedia() {
+    const url = document.getElementById("mediaURL").value.trim();
+    const playbox = document.getElementById("playbox");
+    playbox.innerHTML = '';
+
+    if (!url) return;
+
+    let element;
+
+    // ✅ YouTube Detection and Embed Conversion
+    if (url.includes("youtube.com/watch") || url.includes("youtu.be")) {
+        let videoId = "";
+
+        if (url.includes("youtu.be/")) {
+            videoId = url.split("youtu.be/")[1].split(/[?&]/)[0];
+        } else if (url.includes("v=")) {
+            const params = new URLSearchParams(new URL(url).search);
+            videoId = params.get("v");
+        }
+
+        if (videoId) {
+            element = document.createElement("iframe");
+            element.src = `https://www.youtube.com/embed/${videoId}`;
+            element.allow =
+              "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+            element.allowFullscreen = true;
+            element.style.width = "100%";
+            element.style.height = "100%";
+            playbox.appendChild(element);
+            window.currentMediaURL = url;
+            return;
+        }
+    }
+
+    // ✅ Detect base64 image
+    if (url.startsWith("data:image/")) {
+        element = document.createElement("img");
+        element.src = url;
+        element.style.width = "100%";
+        element.style.height = "100%";
+        element.style.objectFit = "stretch";
+        element.style.objectPosition = "center";
+        playbox.appendChild(element);
+        window.currentMediaURL = url;
+        return;
+    }
+
+    let extension = url.split('.').pop().toLowerCase();
+
+    if (['png','jpg','jpeg','gif','webp'].includes(extension)) {
+        element = document.createElement('img');
+        element.src = url;
+        element.style.width = "100%";
+        element.style.height = "100%";
+        element.style.objectFit = "cover";
+        element.style.objectPosition = "center";
+        playbox.appendChild(element);
+        window.currentMediaURL = url;
+        return;
+    }
+
+    if (['mp3','wav','ogg'].includes(extension)) {
+        element = document.createElement('audio');
+        element.src = url;
+        element.controls = true;
+        element.style.width = "100%";
+        playbox.appendChild(element);
+        window.currentMediaURL = url;
+        return;
+    }
+
+    if (['mp4','webm','mov','avi'].includes(extension)) {
+        element = document.createElement('video');
+        element.src = url;
+        element.controls = true;
+        element.style.width = "100%";
+        element.style.height = "100%";
+        playbox.appendChild(element);
+        window.currentMediaURL = url;
+        return;
+    }
+
+    // Fallback: try embedding webpage
+    element = document.createElement('iframe');
+    element.src = url;
+    element.style.width = "100%";
+    element.style.height = "100%";
+    element.loading = "lazy";
+    element.referrerPolicy = "no-referrer";
+
+    let iframeTimeout = setTimeout(() => {
+        playbox.innerHTML = `
+            <p style="color:red; text-align:center; font-family:monospace;">
+                ⚠️ This site refused to be embedded (Security Policy).
+            </p>
+            <button id="openNewTabBtn" 
+                style="padding:10px; border:none; background:orange; color:white; cursor:pointer; border-radius:8px;">
+                Open in New Window
+            </button>
+        `;
+        document.getElementById("openNewTabBtn").onclick = () => {
+            window.open(url, "_blank");
+        };
+    }, 3000);
+
+    element.onload = () => clearTimeout(iframeTimeout);
+    element.onerror = () => {
+        clearTimeout(iframeTimeout);
+        playbox.innerHTML = `
+            <p style="color:red; text-align:center; font-family:monospace;">
+                ⚠️ Could not load the page.
+            </p>
+        `;
+    };
+
+    playbox.appendChild(element);
+    window.currentMediaURL = url;
+}
+
+function clearFunc() {
+    document.getElementById("mediaURL").value = '';
+    document.getElementById("playbox").innerHTML = 'Media will appear here';
+    window.currentMediaURL = null;
+}
+   
+function downloadFunc() {
+    const url = window.currentMediaURL;
+    if (!url) {
+        alert("No media loaded to download!");
+        return;
+    }
+
+    const fileName = url.split('/').pop().split('?')[0] || 'downloaded_media';
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    link.target = "_blank";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+</script>
+
+</body>
+</html>
