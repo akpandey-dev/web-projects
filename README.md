@@ -7,3 +7,4 @@ Current project count:
  * toss -> toss.html
  * calculator -> calculator.html
  * rps -> rps.html
+ * num-guessing -> num-guessing.html
