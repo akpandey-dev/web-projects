@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch</title>
+    <link href="https://fonts.cdnfonts.com/css/digital-7-mono" rel="stylesheet">
+
+<style>
+body{
+    color: white;
+    background: linear-gradient(90deg, black, rgb(73, 70, 70));
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    padding: 10px;
+    border: 10px solid grey;
+    height: 90vh;
+}
+.allContainer{
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+}
+h3{
+    font-family: fantasy;
+    align-self: center;
+    font-style: italic;
+    font-size: xx-large;
+    margin-top: 0;
+    transition: 1.5s ease-in-out;
+}
+#headingBase{
+    width: 90%;
+    margin: 0;
+    height: 4px;
+    background-color: black;
+    transition: 1.5s ease-in-out;
+}
+
+
+
+#timeOutput{
+    background-color: black;
+    height: 8vh;
+    width: 70vw;
+    margin: 20px;
+    border: 2px solid red;
+    text-align: center;
+    font-family: 'Digital-7 Mono', monospace;
+    padding: auto;
+    font-size: clamp(0.8rem, 1.7rem, 2.8rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;      /* centers vertically */
+    justify-content: center;  /* centers horizontally */
+    
+}
+
+.rFrame{
+    border-style: solid;
+    border-width: 3px;
+    border-color: white;
+    border-radius: 50%;
+    height: 30vmin;
+    width: 30vmin;
+    padding: 5px;
+    background-color: #000;
+    position: relative;
+    box-shadow: 5px 5px 60vh rgba(1, 5, 255, 0.5);
+    margin-top: 10px;
+
+   
+
+}
+
+.rFrame:hover {
+    box-shadow: 0 0 20px 5px rgba(255, 0, 0, 0.5);
+    transform: scale(1.01);
+    transition: 0.3s ease-in-out;
+}
+
+
+.numbers{
+    position: absolute;
+    color: white;
+    font-weight: bold;
+    font-size: 0.7em;
+    transform: translate(-50%, -50%);
+    
+}
+
+.dot{
+    position: absolute;
+    color: blueviolet;
+    background-color: red;
+    border-style: solid;
+    border-width: px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    width: 2vmin;
+    height: 2vmin;
+    top: 50%;
+    left: 50%;
+    border-color: white;
+    
+}
+
+.hand {
+    position: absolute;
+    width: 1%;
+    background: black;
+    top: 50%;
+    left: 50%;
+    transform-origin: bottom center;
+    transform: translate(-50%, -100%) rotate(0deg);
+    z-index: 5;
+}
+
+
+.hour {
+    height: 25%;
+    background: whitesmoke;
+    width: 4px;
+    border-top-left-radius: 45%;
+    border-top-right-radius: 45%;
+    
+    
+}
+
+.minute {
+    height: 33%;
+    background: whitesmoke;
+    width: 2px;
+    border-top-left-radius: 45%;
+    border-top-right-radius: 45%;
+}
+
+.second {
+    height: 38%;
+    background: red;
+    border-top-left-radius: 45%;
+    border-top-right-radius: 45%;
+    z-index: 10;
+}
+.navigationBar{
+    display: flex;
+    height: 10vh;
+    width: 100%;
+    gap: 2px;
+}
+.btn{
+    color: black;
+    font-style: oblique;
+    font-family: bold;
+    background-color: blueviolet;
+    border: none;
+    border-radius: 5px;
+    height: 4vh;
+    width: 35%;
+    font-size: clamp(8px, 14px, 20px);
+}
+.lappedValue{
+    background-color: grey;
+    height: 20vh;
+    width: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+</style>
+</head>
+<body>
+<div class="allContainer">
+<h3 id="heading">Stop-Watch</h3>
+<hr id="headingBase">
+
+
+
+
+
+<div class="rFrame" id="clock">
+
+<div class='dot'></div>
+             
+<div class="hand hour" id="hourHand"></div>
+<div class="hand minute" id="minuteHand"></div>
+<div class="hand second" id="secondHand"></div>
+
+</div>
+
+<output id="timeOutput">00:00:00:00</output>
+
+<div class="navigationBar">
+<button type="button" class="btn" id="startBtn">Start</button>
+<button type="button" class="btn" id="pauseBtn" onclick="pauseWatch()">Pause</button>
+<button type="button" class="btn" id="lapBtn" onclick="lapWatch()">Lap</button>
+</div>
+<div class="lappedValue">
+
+</div>
+
+
+
+
+
+
+
+</div>
+<script>
+// Color changing heading
+setInterval(() => {
+  const r = Math.floor(Math.random() * 256);
+  const g = Math.floor(Math.random() * 256);
+  const b = Math.floor(Math.random() * 256);
+  const color = `rgb(${r}, ${g}, ${b})`;
+  document.getElementById("headingBase").style.backgroundColor = color;
+  document.getElementById("heading").style.color = color;
+}, 1000);
+
+// Clock UI setup
+const clock = document.getElementById("clock");
+for (let i = 1; i <= 12; i++) {
+  const angle = (i * 30) * Math.PI / 180;
+  const radius = 41;
+  const number = document.createElement("div");
+  number.className = "numbers";
+  number.innerText = i;
+  const x = 50 + radius * Math.sin(angle);
+  const y = 50 - radius * Math.cos(angle);
+  number.style.left = `${x}%`;
+  number.style.top = `${y}%`;
+  clock.appendChild(number);
+}
+
+function updateClock() {
+  const second = document.getElementById("secondHand");
+  const minute = document.getElementById("minuteHand");
+  const hour = document.getElementById("hourHand");
+  const now = new Date();
+  const sec = now.getSeconds();
+  const min = now.getMinutes();
+  const hr = now.getHours();
+  const secDeg = sec * 6;
+  const minDeg = min * 6 + sec / 10;
+  const hourDeg = (hr % 12) * 30 + min / 2;
+
+  second.style.transform = `translate(-50%, -100%) rotate(${secDeg}deg)`;
+  minute.style.transform = `translate(-50%, -100%) rotate(${minDeg}deg)`;
+  hour.style.transform = `translate(-50%, -100%) rotate(${hourDeg}deg)`;
+}
+
+setInterval(updateClock, 100);
+updateClock();
+
+// Stopwatch core
+let startTime = 0;
+let elapsedTime = 0;
+let timerInterval;
+let running = false;
+
+const timeOutput = document.getElementById("timeOutput");
+const lapsContainer = document.querySelector(".lappedValue");
+
+function formatTime(ms) {
+  const totalSeconds = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  const centiseconds = Math.floor((ms % 1000) / 10);
+
+
+
+  return (
+    String(hours).padStart(2, "0") +
+    ":" +
+    String(minutes).padStart(2, "0") +
+    ":" +
+    String(seconds).padStart(2, "0") +
+    ":" +
+    String(centiseconds).padStart(2, "0")
+  );
+}
+
+
+
+  function downloadFunc() {
+  // Build text content
+  let data = `🕒 Stopwatch Report\n\nFinal Time: ${formatTime(elapsedTime)}\n\nLaps:\n`;
+
+  if (lapsContainer.children.length === 0) {
+    data += "No laps recorded.";
+  } else {
+    [...lapsContainer.children]
+      .reverse() // so Lap 1 is at top in file
+      .forEach((lap, i) => {
+        data += `${i + 1}. ${lap.textContent.replace("Lap ", "")}\n`;
+      });
+  }
+
+  // Create a file
+  const blob = new Blob([data], { type: "text/plain" });
+  const link = document.createElement("a");
+  const timestamp = new Date()
+    .toISOString()
+    .replace(/[:.]/g, "-")
+    .replace("T", "_")
+    .split("Z")[0]; // nice timestamp like 2025-11-04_15-32-20
+
+  link.href = URL.createObjectURL(blob);
+  link.download = `stopwatch_${timestamp}.txt`;
+  link.click();
+
+  // Cleanup
+  URL.revokeObjectURL(link.href);
+}
+
+
+
+
+
+
+function updateDisplay() {
+  timeOutput.value = formatTime(elapsedTime);
+}
+
+function startWatch() {
+  if (!running) {
+    running = true;
+    startTime = Date.now() - elapsedTime;
+    timerInterval = setInterval(() => {
+      elapsedTime = Date.now() - startTime;
+      updateDisplay();
+    }, 10);
+  }
+}
+
+function pauseWatch() {
+  if (running) {
+    running = false;
+    clearInterval(timerInterval);
+  }
+}
+
+function resumeWatch() {
+  if (!running) {
+    running = true;
+    startTime = Date.now() - elapsedTime;
+    timerInterval = setInterval(() => {
+      elapsedTime = Date.now() - startTime;
+      updateDisplay();
+    }, 10);
+  }
+}
+
+function stopWatch() {
+  running = false;
+  clearInterval(timerInterval);
+
+  const finalValue = timeOutput.value;
+  const lapValue = lapsContainer.textContent.trim() || "No laps recorded.";
+
+  const userChoice = prompt(`${finalValue}\n\n\nDo you want to download it? (y/n)`);
+
+  if (userChoice.toLowerCase() == "y") {
+    downloadFunc();
+  }
+
+  elapsedTime = 0;
+  updateDisplay();
+  lapsContainer.innerHTML = "";
+}
+
+
+function lapWatch() {
+  if (running) {
+    const lapTime = formatTime(elapsedTime);
+    const lapEntry = document.createElement("div");
+    lapEntry.textContent = "Lap " + (lapsContainer.children.length + 1) + ": " + lapTime;
+    lapEntry.style.padding = "5px";
+    lapEntry.style.borderBottom = "1px solid #000";
+    lapsContainer.prepend(lapEntry);
+  }
+}
+
+// Initialize
+updateDisplay();
+
+let toggleStart = true;
+document.getElementById("startBtn").addEventListener("click", () => {
+  if (toggleStart) {
+    startWatch();
+    document.getElementById("startBtn").textContent = "Stop";
+    toggleStart = false;
+  } else {
+    stopWatch();
+    document.getElementById("startBtn").textContent = "Start";
+    toggleStart = true;
+  }
+});
+
+let togglePause = true;
+document.getElementById("pauseBtn").addEventListener("click", () => {
+  if (timeOutput.value === "00:00:00:00") return;
+  if (togglePause) {
+    pauseWatch();
+    document.getElementById("pauseBtn").textContent = "Resume";
+    togglePause = false;
+  } else {
+    resumeWatch();
+    document.getElementById("pauseBtn").textContent = "Pause";
+    togglePause = true;
+  }
+});
+</script>
+</body>
+</html>
