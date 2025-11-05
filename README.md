@@ -4,7 +4,7 @@ A compact suite of browser-based utilities and mini-apps — from everyday calcu
 
 Current project count:
 
- * toss -> toss.html
+ * toss-coin -> toss-coin.html
  * calculator -> calculator.html
- * rps -> rps.html
- * num-guessing -> num-guessing.html
+ * rock-paper-scissor -> rock-paper-scissor.html
+ * number-guessing-game -> number-guessing-game.html
