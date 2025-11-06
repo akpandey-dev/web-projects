@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timer</title>
+  <style>
+    body {
+      color: white;
+      background: linear-gradient(90deg, black, rgb(73, 70, 70));
+      display: flex;
+      flex-direction: column;
+      margin: auto;
+      padding: 10px;
+      border: 10px solid grey;
+      height: 90vh;
+    }
+
+    .allContainer {
+      display: flex;
+      flex-direction: column;
+      margin: auto;
+      height: 100%;
+      width: 100%;
+      align-items: center;
+    }
+
+    h3 {
+      font-family: fantasy;
+      align-self: center;
+      font-style: italic;
+      font-size: xx-large;
+      margin-top: 0;
+      transition: 1.5s ease-in-out;
+      margin-bottom: 5px;
+      color: red;
+    }
+
+    #headingBase {
+      width: 100%;
+      margin: 0;
+      height: 4px;
+      background-color: black;
+      transition: 1.5s ease-in-out;
+      border: 2px solid black;
+    }
+
+    .timerScreen {
+      height: 30vh;
+      width: 80%;
+      background-color: white;
+      margin-top: 10vh;
+      border: 2px double black;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: row;
+      padding: 5px;
+      align-items: center;
+      justify-content: center;
+      color: black;
+    }
+
+.partTimer {
+  height: 100%;
+  width: clamp(80px, 15vw, 180px);
+  background-color: red;
+  border: none;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(2rem, 6vw, 5rem);
+}
+
+.separator {
+  width: clamp(20px, 4vw, 50px);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(2rem, 8vw, 6rem);
+}
+
+.btn {
+  background: none;
+  border: none;
+  font-size: clamp(1.5rem, 2vw, 3rem);
+  cursor: pointer;
+  color: white;
+  --webkit-user-select:none;
+  position: relative;
+}
+
+
+    .btn:hover {
+      transform: scale(1.2);
+    }
+
+    span {
+      color: white;
+      font-weight: bold;
+    }
+
+    @keyframes borderFlow {
+      0% { border-image-source: linear-gradient(45deg, red, orange, yellow, lime, cyan, blue, violet, red); }
+      100% { border-image-source: linear-gradient(405deg, red, orange, yellow, lime, cyan, blue, violet, red); }
+    }
+
+    .navBar {
+      width: 100%;
+      height: 10vh;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      border: 10px solid;
+      margin: 20px;
+      border-image: linear-gradient(45deg, red, orange, yellow, lime, cyan, blue, violet, red) 1;
+      background-color: black;
+    }
+
+    .navBtn {
+      height: 5vh;
+      width: 25vw;
+      border: none;
+      background: linear-gradient(90deg, #111, #333);
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.7rem;
+      transition: 0.3s;
+    }
+
+    .navBtn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg, #222, #666);
+    }
+  </style>
+</head>
+<body>
+  <div class="allContainer">
+    <h3>Timer</h3>
+    <hr id="headingBase">
+
+    <div class="timerScreen">
+      <div class="hour partTimer">
+        <button type="button" class="btn" onmousedown="holdStart(hourInc)" onmouseup="holdStop()" onmouseleave="holdStop()">⇧</button>
+        <span id="hour">00</span>
+        <button type="button" class="btn" onmousedown="holdStart(hourDec)" onmouseup="holdStop()" onmouseleave="holdStop()">⇩</button>
+      </div>
+
+      <div class="separator">⁚</div>
+
+      <div class="minute partTimer">
+        <button type="button" class="btn" onmousedown="holdStart(minInc)" onmouseup="holdStop()" onmouseleave="holdStop()">⇧</button>
+        <span id="minute">00</span>
+        <button type="button" class="btn" onmousedown="holdStart(minDec)" onmouseup="holdStop()" onmouseleave="holdStop()">⇩</button>
+      </div>
+
+      <div class="separator">⁚</div>
+
+      <div class="second partTimer">
+        <button type="button" class="btn" onmousedown="holdStart(secInc)" onmouseup="holdStop()" onmouseleave="holdStop()">⇧</button>
+        <span id="second">00</span>
+        <button type="button" class="btn" onmousedown="holdStart(secDec)" onmouseup="holdStop()" onmouseleave="holdStop()">⇩</button>
+      </div>
+    </div>
+
+    <div class="navBar" id="navBar">
+      <button type="button" class="navBtn" id="startBtn">Start</button>
+      <button type="button" class="navBtn" id="pauseBtn">Pause</button>
+      <button type="button" class="navBtn" id="audioBtn">Audio</button>
+    </div>
+    <input type="file" id="timeoverFile" accept="audio/*" style="display:none;">
+  </div>
+
+  <script>
+    let hour = 0, minute = 0, second = 0;
+    let holdInterval = null;
+    let timeoverAudio = new Audio("https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg");
+    let timer, isRunning = false, started = false;
+
+    function updateDisplay() {
+      document.getElementById("hour").textContent = hour.toString().padStart(2, '0');
+      document.getElementById("minute").textContent = minute.toString().padStart(2, '0');
+      document.getElementById("second").textContent = second.toString().padStart(2, '0');
+    }
+
+    function hourInc() { hour = (hour + 1) % 24; updateDisplay(); }
+    function hourDec() { hour = (hour - 1 + 24) % 24; updateDisplay(); }
+    function minInc() { minute = (minute + 1) % 60; updateDisplay(); }
+    function minDec() { minute = (minute - 1 + 60) % 60; updateDisplay(); }
+    function secInc() { second = (second + 1) % 60; updateDisplay(); }
+    function secDec() { second = (second - 1 + 60) % 60; updateDisplay(); }
+
+    function holdStart(fn) {
+      fn();
+      holdInterval = setInterval(fn, 100);
+    }
+    function holdStop() { clearInterval(holdInterval); }
+
+    function startTimer() {
+      if (!isRunning) {
+        isRunning = true;
+        timer = setInterval(() => {
+          if (hour === 0 && minute === 0 && second === 0) {
+            clearInterval(timer);
+            isRunning = false;
+            started = false;
+            document.getElementById("startBtn").textContent = "Start";
+            enableBtns(true);
+            document.getElementById("navBar").style.backgroundColor = "red";
+            timeoverAudio.play();
+            setTimeout(() => {
+              document.getElementById("navBar").style.backgroundColor = "black";
+            }, 500);
+            return;
+          }
+
+          if (second === 0) {
+            if (minute === 0) {
+              hour--;
+              minute = 59;
+            } else {
+              minute--;
+            }
+            second = 59;
+          } else {
+            second--;
+          }
+
+          updateDisplay();
+        }, 1000);
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(timer);
+      isRunning = false;
+      updateDisplay();
+    }
+
+    function enableBtns(state) {
+      const allBtns = document.getElementsByClassName("btn");
+      for (let btn of allBtns) btn.disabled = !state;
+    }
+
+    document.getElementById("startBtn").addEventListener("click", () => {
+      if (!started) {
+        enableBtns(false);
+        document.getElementById("startBtn").textContent = "Stop";
+        started = true;
+        startTimer();
+      } else {
+        enableBtns(true);
+        document.getElementById("startBtn").textContent = "Start";
+        started = false;
+        resetTimer();
+      }
+    });
+
+    document.getElementById("pauseBtn").addEventListener("click", () => {
+      if (isRunning) {
+        clearInterval(timer);
+        isRunning = false;
+        document.getElementById("pauseBtn").textContent = "Resume";
+      } else {
+        if (document.getElementById("startBtn").textContent == "Start") {
+        alert("Start timer 1st!");
+        return;
+        }
+        startTimer();
+        document.getElementById("pauseBtn").textContent = "Pause";
+           }
+    });
+
+document.getElementById("audioBtn").addEventListener("click", () => {
+  document.getElementById("timeoverFile").click();
+});
+
+
+document.getElementById("audioBtn").addEventListener("contextmenu", (event) => {
+  event.preventDefault(); // stop right-click menu
+  timeoverAudio = new Audio("https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg");
+  alert("Custom audio removed. Default alarm restored!");
+});
+
+
+    document.getElementById("timeoverFile").addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const url = URL.createObjectURL(file);
+        timeoverAudio = new Audio(url);
+      }
+    });
+
+    updateDisplay();
+  </script>
+</body>
+</html>
