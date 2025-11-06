@@ -178,126 +178,140 @@
   </div>
 
   <script>
-    let hour = 0, minute = 0, second = 0;
-    let holdInterval = null;
-    let timeoverAudio = new Audio("https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg");
-    let timer, isRunning = false, started = false;
+let hour = 0, minute = 0, second = 0;
+let holdInterval = null;
+let timeoverAudio = new Audio("https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg");
+let timer, isRunning = false, started = false;
 
-    function updateDisplay() {
-      document.getElementById("hour").textContent = hour.toString().padStart(2, '0');
-      document.getElementById("minute").textContent = minute.toString().padStart(2, '0');
-      document.getElementById("second").textContent = second.toString().padStart(2, '0');
-    }
+function updateDisplay() {
+  document.getElementById("hour").textContent = hour.toString().padStart(2, '0');
+  document.getElementById("minute").textContent = minute.toString().padStart(2, '0');
+  document.getElementById("second").textContent = second.toString().padStart(2, '0');
+}
 
-    function hourInc() { hour = (hour + 1) % 24; updateDisplay(); }
-    function hourDec() { hour = (hour - 1 + 24) % 24; updateDisplay(); }
-    function minInc() { minute = (minute + 1) % 60; updateDisplay(); }
-    function minDec() { minute = (minute - 1 + 60) % 60; updateDisplay(); }
-    function secInc() { second = (second + 1) % 60; updateDisplay(); }
-    function secDec() { second = (second - 1 + 60) % 60; updateDisplay(); }
+function hourInc() { hour = (hour + 1) % 24; updateDisplay(); }
+function hourDec() { hour = (hour - 1 + 24) % 24; updateDisplay(); }
+function minInc() { minute = (minute + 1) % 60; updateDisplay(); }
+function minDec() { minute = (minute - 1 + 60) % 60; updateDisplay(); }
+function secInc() { second = (second + 1) % 60; updateDisplay(); }
+function secDec() { second = (second - 1 + 60) % 60; updateDisplay(); }
 
-    function holdStart(fn) {
-      fn();
-      holdInterval = setInterval(fn, 100);
-    }
-    function holdStop() { clearInterval(holdInterval); }
+function holdStart(fn) {
+  fn();
+  holdInterval = setInterval(fn, 120);
+}
+function holdStop() {
+  clearInterval(holdInterval);
+  holdInterval = null;
+}
 
-    function startTimer() {
-      if (!isRunning) {
-        isRunning = true;
-        timer = setInterval(() => {
-          if (hour === 0 && minute === 0 && second === 0) {
-            clearInterval(timer);
-            isRunning = false;
-            started = false;
-            document.getElementById("startBtn").textContent = "Start";
-            enableBtns(true);
-            document.getElementById("navBar").style.backgroundColor = "red";
-            timeoverAudio.play();
-            setTimeout(() => {
-              document.getElementById("navBar").style.backgroundColor = "black";
-            }, 500);
-            return;
-          }
+// Mobile touch fix
+document.querySelectorAll('.btn').forEach(btn => {
+  btn.addEventListener('touchstart', e => {
+    e.preventDefault();
+    const fnName = btn.getAttribute('onmousedown')?.match(/\((.*?)\)/)?.[1];
+    if (fnName && typeof window[fnName] === 'function') holdStart(window[fnName]);
+  });
+  btn.addEventListener('touchend', e => holdStop());
+});
 
-          if (second === 0) {
-            if (minute === 0) {
-              hour--;
-              minute = 59;
-            } else {
-              minute--;
-            }
-            second = 59;
-          } else {
-            second--;
-          }
-
-          updateDisplay();
-        }, 1000);
-      }
-    }
-
-    function resetTimer() {
-      clearInterval(timer);
-      isRunning = false;
-      updateDisplay();
-    }
-
-    function enableBtns(state) {
-      const allBtns = document.getElementsByClassName("btn");
-      for (let btn of allBtns) btn.disabled = !state;
-    }
-
-    document.getElementById("startBtn").addEventListener("click", () => {
-      if (!started) {
-        enableBtns(false);
-        document.getElementById("startBtn").textContent = "Stop";
-        started = true;
-        startTimer();
-      } else {
-        enableBtns(true);
-        document.getElementById("startBtn").textContent = "Start";
-        started = false;
-        resetTimer();
-      }
-    });
-
-    document.getElementById("pauseBtn").addEventListener("click", () => {
-      if (isRunning) {
+function startTimer() {
+  if (!isRunning) {
+    isRunning = true;
+    timer = setInterval(() => {
+      if (hour === 0 && minute === 0 && second === 0) {
         clearInterval(timer);
         isRunning = false;
-        document.getElementById("pauseBtn").textContent = "Resume";
-      } else {
-        if (document.getElementById("startBtn").textContent == "Start") {
-        alert("Start timer 1st!");
+        started = false;
+        document.getElementById("startBtn").textContent = "Start";
+        enableBtns(true);
+        document.getElementById("navBar").style.backgroundColor = "red";
+        timeoverAudio.play();
+        setTimeout(() => {
+          document.getElementById("navBar").style.backgroundColor = "black";
+        }, 500);
         return;
+      }
+
+      if (second === 0) {
+        if (minute === 0) {
+          hour--;
+          minute = 59;
+        } else {
+          minute--;
         }
-        startTimer();
-        document.getElementById("pauseBtn").textContent = "Pause";
-           }
-    });
+        second = 59;
+      } else {
+        second--;
+      }
+
+      updateDisplay();
+    }, 1000);
+  }
+}
+
+function resetTimer() {
+  clearInterval(timer);
+  isRunning = false;
+  hour = minute = second = 0;
+  updateDisplay();
+  document.getElementById("pauseBtn").textContent = "Pause";
+}
+
+function enableBtns(state) {
+  const allBtns = document.getElementsByClassName("btn");
+  for (let btn of allBtns) btn.disabled = !state;
+}
+
+document.getElementById("startBtn").addEventListener("click", () => {
+  if (!started) {
+    enableBtns(false);
+    document.getElementById("startBtn").textContent = "Stop";
+    started = true;
+    startTimer();
+  } else {
+    enableBtns(true);
+    document.getElementById("startBtn").textContent = "Start";
+    started = false;
+    resetTimer();
+  }
+});
+
+document.getElementById("pauseBtn").addEventListener("click", () => {
+  if (isRunning) {
+    clearInterval(timer);
+    isRunning = false;
+    document.getElementById("pauseBtn").textContent = "Resume";
+  } else {
+    if (!started) {
+      alert("Start timer first!");
+      return;
+    }
+    startTimer();
+    document.getElementById("pauseBtn").textContent = "Pause";
+  }
+});
 
 document.getElementById("audioBtn").addEventListener("click", () => {
   document.getElementById("timeoverFile").click();
 });
 
-
 document.getElementById("audioBtn").addEventListener("contextmenu", (event) => {
-  event.preventDefault(); // stop right-click menu
+  event.preventDefault();
   timeoverAudio = new Audio("https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg");
   alert("Custom audio removed. Default alarm restored!");
 });
 
+document.getElementById("timeoverFile").addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const url = URL.createObjectURL(file);
+    timeoverAudio = new Audio(url);
+  }
+});
 
-    document.getElementById("timeoverFile").addEventListener("change", (event) => {
-      const file = event.target.files[0];
-      if (file) {
-        const url = URL.createObjectURL(file);
-        timeoverAudio = new Audio(url);
-      }
-    });
+updateDisplay();
 
-    updateDisplay();
   </script>
 </body>
 </html>
