@@ -9,3 +9,4 @@ Current project count:
  * rock-paper-scissor -> rock-paper-scissor.html
  * number-guessing-game -> number-guessing-game.html
  * age-calculator -> age-calculator.html
+ * image-slider -> image-slider.html
