@@ -10,3 +10,4 @@ Current project count:
  * number-guessing-game -> number-guessing-game.html
  * age-calculator -> age-calculator.html
  * image-slider -> image-slider.html
+ * height-converter -> height-converter.html
