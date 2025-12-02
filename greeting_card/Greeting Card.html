@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Birthday Card</title>
+<title>Greeting Card</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -97,13 +97,15 @@ body::-webkit-scrollbar {
         justify-content: center;
         margin: 10px 0;
     }
-    .image-container img {
-        width: clamp(80vw, 100%, 100%);
-        height: 230px;
-        object-fit: cover;
-        border-radius: 8px;
-        transition: transform 0.5s;
-    }
+.image-container img {
+    object-fit: cover;    /* keeps shape */
+    width: 150px;         /* default square */
+    height: 150px;
+    aspect-ratio: 1 / 1;
+    border-radius: 8px;
+    transition: width 0.3s, height 0.3s;
+}
+
     .image-container img:hover { transform: scale(1.05) rotate(2deg); }
 
     .popup-bg {
@@ -161,18 +163,18 @@ body::-webkit-scrollbar {
 <button type="button" class="btn" id="editBtn">Edit Card</button>
 <button type="button" class="btn" id="downloadBtn" onclick="downloadCard()">Download Card</button>
 
-<div class="card" id="birthdayCard">
-    <h1>HAPPY BIRTHDAY</h1>
+<div class="card" id="greetingCard">
+    <h1 id="cardPurposeText">HAPPY BIRTHDAY</h1>
     <div class="greet">
-        <p>Happy Birthday Dear <span id="recipientName">________</span>!</p>
+        <p><span id="greetingText">Happy Birthday Dear </span><span id="recipientName">________</span>!</p>
         <p id="quote1">May you get everything you want!</p>
         <p id="quoteText"></p>
         <div class="image-container">
-            <img id="balloonImg" src="https://i.pinimg.com/736x/04/a6/9a/04a69a0ee9849a807dddb49530289dc5.jpg" alt="Birthday Image">
+            <img id="firstImg" src="https://i.pinimg.com/736x/04/a6/9a/04a69a0ee9849a807dddb49530289dc5.jpg" alt="Birthday Image">
         </div>
         <p id="quote2">A birthday is a celebration of the journey you've taken and the adventures that await.</p>
         <div class="image-container">
-            <img id="cakeImg" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_RDa49bPcwxNEhwSoKH5vSjCWFrt3OBX4gw&s" alt="Embedded Birthday Image">
+            <img id="secondImg" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_RDa49bPcwxNEhwSoKH5vSjCWFrt3OBX4gw&s" alt="Embedded Birthday Image">
         </div>
         <p id="quote3">Once again, best wishes on your birthday.</p>
     </div>
@@ -184,6 +186,12 @@ body::-webkit-scrollbar {
         <h4>Edit Card Options</h4>
         <label>Recipient Name:
             <input type="text" id="recipientInput" placeholder="Enter recipient name">
+        </label>
+        <label>Card Purpose:
+            <input type="text" id="cardPurpose" placeholder="eg. Happy Birthday">
+        </label>
+        <label>Greeting Text:
+            <input type="text" id="greetText" placeholder="eg. Happy Birthday Dear _!">
         </label>
         <label>Your Text:
             <input type="text" id="quoteInput" placeholder="Enter extra quote">
@@ -215,17 +223,17 @@ body::-webkit-scrollbar {
         <label>Text Alignment:
             <input type="text" id="quoteAlignment" placeholder="eg. 1 ('2', 'all', etc.), l(or 'c' or 'r')">
         </label>
-        <label>Upload Balloon Image:
-            <input type="file" id="balloonUploader" accept="image/*">
+        <label>Upload First Image:
+            <input type="file" id="firstImgUploader" accept="image/*">
         </label>
-        <label>Upload Cake Image:
-            <input type="file" id="cakeUploader" accept="image/*">
+        <label>Upload Second Image:
+            <input type="file" id="secondImgUploader" accept="image/*">
         </label>
-        <label>Balloon Image Size:
-            <input type="range" id="balloonSize">
+        <label>First Image Size:
+            <input type="range" id="firstImgSize" min="10" max="400" value="150">
         </label>
-        <label>Cake Image Size:
-            <input type="range" id="cakeSize">
+        <label>Second Image Size:
+            <input type="range" id="secondImgSize" min="10" max="400" value="150">
         </label>
         <label>Image Border:
             <input type="text" id="imageBorder" placeholder="eg. 3px solid blue">
@@ -237,6 +245,9 @@ body::-webkit-scrollbar {
 </div>
 
 <script>
+
+alert("Welcome! This is just a placeholder example. Click 'Edit Card' to customize your greeting card. After making changes, click 'Download Card' to save it as a PNG image.");
+// ----------------------- Popup Handling -----------------------   
 document.getElementById('editBtn').addEventListener('click', function() {
     document.getElementById('popupBg').style.display = 'flex';
 });
@@ -252,6 +263,16 @@ document.getElementById('popupBg').addEventListener('click', function(e) {
 document.getElementById('recipientInput').addEventListener('input', function() {
     const name = this.value.trim();
     document.getElementById('recipientName').textContent = name || "________";
+});
+
+document.getElementById('cardPurpose').addEventListener('input', function() {
+    const use = this.value.trim();
+    document.getElementById('cardPurposeText').textContent = use || "Happy Birthday!";
+});
+
+document.getElementById('greetText').addEventListener('input', function() {
+    const text = this.value.trim();
+    document.getElementById('greetingText').textContent = text + ' ' || "Happy Birthday Dear ";
 });
 
 document.getElementById('quoteInput').addEventListener('input', function() {
@@ -275,28 +296,28 @@ document.getElementById('3rdquote').addEventListener('input', function() {
 });
 
 document.getElementById('cardBgColor').addEventListener('input', function() {
-    document.getElementById('birthdayCard').style.backgroundColor = this.value;
+    document.getElementById('greetingCard').style.backgroundColor = this.value;
 });
 document.getElementById('fontSize').addEventListener('input', function() {
-    document.getElementById('birthdayCard').style.fontSize = this.value + "px";
+    document.getElementById('greetingCard').style.fontSize = this.value + "px";
 });
 document.getElementById('fontColor').addEventListener('input', function() {
-    document.getElementById('birthdayCard').style.color = this.value;
+    document.getElementById('greetingCard').style.color = this.value;
 });
 document.getElementById('fontColor').addEventListener('input', function() {
-    document.getElementById('birthdayCard').style.color = this.value;
+    document.getElementById('greetingCard').style.color = this.value;
 });
 document.getElementById('cardBorder').addEventListener('input', function() {
-    document.getElementById('birthdayCard').style.border = this.value;
+    document.getElementById('greetingCard').style.border = this.value;
 });
 document.getElementById('cardBorder').addEventListener('input', function() {
-    document.getElementById('birthdayCard').style.border = this.value;
+    document.getElementById('greetingCard').style.border = this.value;
 });
 document.getElementById('cardBorderRadius').addEventListener('input', function() {
-    document.getElementById('birthdayCard').style.borderRadius = this.value + "px";
+    document.getElementById('greetingCard').style.borderRadius = this.value + "px";
 });
 document.getElementById('cardBorderRadius').addEventListener('input', function() {
-    document.getElementById('birthdayCard').style.borderRadius = this.value + "px";
+    document.getElementById('greetingCard').style.borderRadius = this.value + "px";
 });
 document.getElementById('quoteAlignment').addEventListener('input', function () {
     const input = this.value.trim().toLowerCase();
@@ -347,42 +368,50 @@ document.getElementById('quoteAlignment').addEventListener('input', function () 
             break;
     }
 });
-document.getElementById('balloonSize').addEventListener('input', function() {
-    const size = this.value;
-    document.getElementById('balloonImg').style.width = size + "px";
+document.getElementById('firstImgSize').addEventListener('input', function () {
+    const size = this.value + "px";
+    const img = document.getElementById('firstImg');
+
+    img.style.width = size;
+    img.style.height = size;  // <-- square locked
 });
-document.getElementById('cakeSize').addEventListener('input', function() {
-    const size = this.value;
-    document.getElementById('cakeImg').style.width = size + "px";
+
+document.getElementById('secondImgSize').addEventListener('input', function () {
+    const size = this.value + "px";
+    const img = document.getElementById('secondImg');
+
+    img.style.width = size;
+    img.style.height = size;  // <-- also square locked
 });
+
 document.getElementById('imageBorder').addEventListener('input', function() {
     const border = this.value;
-    document.getElementById('balloonImg').style.border = border;
-    document.getElementById('cakeImg').style.border = border;
+    document.getElementById('firstImg').style.border = border;
+    document.getElementById('secondImg').style.border = border;
 });
 document.getElementById('imagesBorderRadius').addEventListener('input', function() {
     const radius = this.value;
-    document.getElementById('balloonImg').style.borderRadius = radius + "px";
-    document.getElementById('cakeImg').style.borderRadius = radius + "px";
+    document.getElementById('firstImg').style.borderRadius = radius + "px";
+    document.getElementById('secondImg').style.borderRadius = radius + "px";
 });
 
 // Image uploaders
-document.getElementById('balloonUploader').addEventListener('change', function(e) {
+document.getElementById('firstImgUploader').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if(file) {
         const reader = new FileReader();
         reader.onload = function(ev){
-            document.getElementById('balloonImg').src = ev.target.result;
+            document.getElementById('firstImg').src = ev.target.result;
         }
         reader.readAsDataURL(file);
     }
 });
-document.getElementById('cakeUploader').addEventListener('change', function(e) {
+document.getElementById('secondImgUploader').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if(file) {
         const reader = new FileReader();
         reader.onload = function(ev){
-            document.getElementById('cakeImg').src = ev.target.result;
+            document.getElementById('secondImg').src = ev.target.result;
         }
         reader.readAsDataURL(file);
     }
@@ -390,7 +419,9 @@ document.getElementById('cakeUploader').addEventListener('change', function(e) {
 
 // ----------------------- Card Download -----------------------
 function downloadCard() {
-    const card = document.getElementById("birthdayCard");
+    let prompted = prompt("Download as PNG will start.\n\n Click OK if you have modified the card and uploaded your images.\n If you haven't uploaded your images, please do so before downloading.", "OK");
+    if(prompted.toLowerCase() == "ok")
+    {const card = document.getElementById("greetingCard");
     card.style.opacity = '1';
     card.style.transform = 'translateY(0)';
     html2canvas(card).then(canvas => {
@@ -402,6 +433,9 @@ function downloadCard() {
         alert("Unable to download as PNG.");
         console.error(err);
     });
+}   else {
+        alert("Download cancelled. Please click OK to proceed with download."); 
+}
 }
 </script>
 
