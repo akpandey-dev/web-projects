@@ -1,0 +1,409 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Birthday Card</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<style>
+    html, body {
+    overflow: scroll;
+    scrollbar-width: none;     /* Firefox */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    display: none;             /* Chrome, Edge, Safari */
+}
+    body {
+        background-color: lightblue;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 20px;
+    }
+    h1 {
+        color: red;
+        font-size: xx-large;
+        font-style: italic;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        text-align: center;
+        font-weight: 900;
+        margin: 0;
+        animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .btn {
+        display: block;
+        margin: 10px auto;
+        padding: 5px 10px;
+        color: cyan;
+        background-color: burlywood;
+        border: 2px solid blue;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: medium;
+        transition: transform 0.2s, background-color 0.3s;
+    }
+    .btn:hover {
+        transform: scale(1.1);
+        background-color: #ffdca0;
+    }
+
+    .card {
+        background-color: yellow;
+        color: red;
+        border: 3px solid darkblue;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 15px;
+        margin: 10px auto;
+        max-width: 500px;
+        font-size: large;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeIn 1s forwards;
+        animation-delay: 0.2s;
+    }
+    @keyframes fadeIn {
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .greet p {
+        margin: 10px 0;
+        text-align: center;
+        transition: color 0.5s;
+    }
+    .greet p:hover { color: darkmagenta; }
+
+    #recipientName {
+        color: deeppink;
+        font-weight: bold;
+        transition: transform 0.3s, color 0.3s;
+    }
+    #recipientName.animate {
+        transform: scale(1.2);
+        color: orangered;
+    }
+
+    .image-container {
+        display: flex;
+        justify-content: center;
+        margin: 10px 0;
+    }
+    .image-container img {
+        width: clamp(80vw, 100%, 100%);
+        height: 230px;
+        object-fit: cover;
+        border-radius: 8px;
+        transition: transform 0.5s;
+    }
+    .image-container img:hover { transform: scale(1.05) rotate(2deg); }
+
+    .popup-bg {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        -webkit-backdrop-filter: blur(5px);
+        backdrop-filter: blur(5px);
+        z-index: 100;
+        overflow-y:auto;
+    }
+.popup {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 350px;        /* stable default width */
+    max-width: 85vw;     /* but never fullscreen */
+    min-width: 100px;    /* no skinny nonsense */
+
+    max-height: 85vh;    /* never touches full height */
+    overflow-y: auto;    /* ONLY the popup scrolls */
+    overflow-x: hidden;  /* prevents horizontal scrollbar */
+
+    background: #fff;
+    padding: 18px;
+    border-radius: 12px;
+    box-sizing: border-box;
+}
+
+    .popup h4 {
+        margin-top: 0;
+    }
+    .popup label {
+        display: block;
+        margin-top: 6px;
+        font-size:x-small;
+    }
+    .popup input[type="color"],
+    .popup input[type="number"],
+    .popup input[type="file"],
+    .popup input[type="range"],
+    .popup input[type="text"] {
+        margin-top: 5px;
+        width: 100%;
+    }
+</style>
+</head>
+<body>
+
+<button type="button" class="btn" id="editBtn">Edit Card</button>
+<button type="button" class="btn" id="downloadBtn" onclick="downloadCard()">Download Card</button>
+
+<div class="card" id="birthdayCard">
+    <h1>HAPPY BIRTHDAY</h1>
+    <div class="greet">
+        <p>Happy Birthday Dear <span id="recipientName">________</span>!</p>
+        <p id="quote1">May you get everything you want!</p>
+        <p id="quoteText"></p>
+        <div class="image-container">
+            <img id="balloonImg" src="https://i.pinimg.com/736x/04/a6/9a/04a69a0ee9849a807dddb49530289dc5.jpg" alt="Birthday Image">
+        </div>
+        <p id="quote2">A birthday is a celebration of the journey you've taken and the adventures that await.</p>
+        <div class="image-container">
+            <img id="cakeImg" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_RDa49bPcwxNEhwSoKH5vSjCWFrt3OBX4gw&s" alt="Embedded Birthday Image">
+        </div>
+        <p id="quote3">Once again, best wishes on your birthday.</p>
+    </div>
+</div>
+
+<!-- POPUP -->
+<div class="popup-bg" id="popupBg">
+    <div class="popup" id="popup">
+        <h4>Edit Card Options</h4>
+        <label>Recipient Name:
+            <input type="text" id="recipientInput" placeholder="Enter recipient name">
+        </label>
+        <label>Your Text:
+            <input type="text" id="quoteInput" placeholder="Enter extra quote">
+        </label>
+        <label>1st quote:
+            <input type="text" id="1stquote" placeholder="Enter quote">
+        </label>
+        <label>2nd quote:
+            <input type="text" id="2ndquote" placeholder="Enter quote">
+        </label>
+        <label>3rd quote:
+            <input type="text" id="3rdquote" placeholder="Enter quote">
+        </label>
+        <label>Card Background Color:
+            <input type="color" id="cardBgColor" value="#ffff00">
+        </label>
+        <label>Font Size (px):
+            <input type="number" id="fontSize" value="16" min="10" max="50">
+        </label>
+        <label>Font Color:
+            <input type="color" id="fontColor" value="#ff0000">
+        </label>
+        <label>Card Border:
+            <input type="text" id="cardBorder" placeholder="eg. 5px solid red">
+        </label>
+        <label>Card Border Radius:
+            <input type="range" id="cardBorderRadius" min="0" max="50" value="12">
+        </label>
+        <label>Text Alignment:
+            <input type="text" id="quoteAlignment" placeholder="eg. 1 ('2', 'all', etc.), l(or 'c' or 'r')">
+        </label>
+        <label>Upload Balloon Image:
+            <input type="file" id="balloonUploader" accept="image/*">
+        </label>
+        <label>Upload Cake Image:
+            <input type="file" id="cakeUploader" accept="image/*">
+        </label>
+        <label>Balloon Image Size:
+            <input type="range" id="balloonSize">
+        </label>
+        <label>Cake Image Size:
+            <input type="range" id="cakeSize">
+        </label>
+        <label>Image Border:
+            <input type="text" id="imageBorder" placeholder="eg. 3px solid blue">
+        </label>
+        <label>Images Border Radius:
+            <input type="range" id="imagesBorderRadius" min="0" max="50" value="12">
+        </label>
+    </div>
+</div>
+
+<script>
+document.getElementById('editBtn').addEventListener('click', function() {
+    document.getElementById('popupBg').style.display = 'flex';
+});
+
+// Close popup when clicking outside
+document.getElementById('popupBg').addEventListener('click', function(e) {
+    if(e.target.id === 'popupBg') {
+        this.style.display = 'none';
+    }
+});
+
+// ----------------------- Card Editing -----------------------
+document.getElementById('recipientInput').addEventListener('input', function() {
+    const name = this.value.trim();
+    document.getElementById('recipientName').textContent = name || "________";
+});
+
+document.getElementById('quoteInput').addEventListener('input', function() {
+    const quote = this.value.trim();
+    document.getElementById('quoteText').textContent = quote || "May you get everything you want!";
+});
+
+document.getElementById('1stquote').addEventListener('input', function() {
+    const quote = this.value.trim();
+    document.getElementById('quote1').textContent = quote;
+});
+
+document.getElementById('2ndquote').addEventListener('input', function() {
+    const quote = this.value.trim();
+    document.getElementById('quote2').textContent = quote;
+});
+
+document.getElementById('3rdquote').addEventListener('input', function() {
+    const quote = this.value.trim();
+    document.getElementById('quote3').textContent = quote;
+});
+
+document.getElementById('cardBgColor').addEventListener('input', function() {
+    document.getElementById('birthdayCard').style.backgroundColor = this.value;
+});
+document.getElementById('fontSize').addEventListener('input', function() {
+    document.getElementById('birthdayCard').style.fontSize = this.value + "px";
+});
+document.getElementById('fontColor').addEventListener('input', function() {
+    document.getElementById('birthdayCard').style.color = this.value;
+});
+document.getElementById('fontColor').addEventListener('input', function() {
+    document.getElementById('birthdayCard').style.color = this.value;
+});
+document.getElementById('cardBorder').addEventListener('input', function() {
+    document.getElementById('birthdayCard').style.border = this.value;
+});
+document.getElementById('cardBorder').addEventListener('input', function() {
+    document.getElementById('birthdayCard').style.border = this.value;
+});
+document.getElementById('cardBorderRadius').addEventListener('input', function() {
+    document.getElementById('birthdayCard').style.borderRadius = this.value + "px";
+});
+document.getElementById('cardBorderRadius').addEventListener('input', function() {
+    document.getElementById('birthdayCard').style.borderRadius = this.value + "px";
+});
+document.getElementById('quoteAlignment').addEventListener('input', function () {
+    const input = this.value.trim().toLowerCase();
+
+    if (!input) return;
+
+    // Split by spaces, ignore extra spaces
+    const parts = input.split(/\s+/);
+
+    if (parts.length < 2) return;
+
+    const target = parts[0];
+    const alignChar = parts[1][0]; // first letter (l/c/r)
+
+    let alignValue = "left";
+    if (alignChar === 'c') alignValue = "center";
+    if (alignChar === 'r') alignValue = "right";
+
+    // Helper to apply alignment safely
+    const applyAlign = (id) => {
+        const el = document.getElementById(id);
+        if (el) el.style.textAlign = alignValue;
+    };
+
+    // If user typed "all"
+    if (target === "all" || target === "a" || target === "*") {
+        applyAlign("quote1");
+        applyAlign("quoteText");
+        applyAlign("quote2");
+        applyAlign("quote3");
+        return;
+    }
+
+    // If user typed "1", "2", "3", "text"
+    switch (target) {
+        case "1":
+            applyAlign("quote1");
+            break;
+        case "2":
+            applyAlign("quote2");
+            break;
+        case "3":
+            applyAlign("quote3");
+            break;
+        case "text":
+        case "t":
+            applyAlign("quoteText");
+            break;
+    }
+});
+document.getElementById('balloonSize').addEventListener('input', function() {
+    const size = this.value;
+    document.getElementById('balloonImg').style.width = size + "px";
+});
+document.getElementById('cakeSize').addEventListener('input', function() {
+    const size = this.value;
+    document.getElementById('cakeImg').style.width = size + "px";
+});
+document.getElementById('imageBorder').addEventListener('input', function() {
+    const border = this.value;
+    document.getElementById('balloonImg').style.border = border;
+    document.getElementById('cakeImg').style.border = border;
+});
+document.getElementById('imagesBorderRadius').addEventListener('input', function() {
+    const radius = this.value;
+    document.getElementById('balloonImg').style.borderRadius = radius + "px";
+    document.getElementById('cakeImg').style.borderRadius = radius + "px";
+});
+
+// Image uploaders
+document.getElementById('balloonUploader').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if(file) {
+        const reader = new FileReader();
+        reader.onload = function(ev){
+            document.getElementById('balloonImg').src = ev.target.result;
+        }
+        reader.readAsDataURL(file);
+    }
+});
+document.getElementById('cakeUploader').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if(file) {
+        const reader = new FileReader();
+        reader.onload = function(ev){
+            document.getElementById('cakeImg').src = ev.target.result;
+        }
+        reader.readAsDataURL(file);
+    }
+});
+
+// ----------------------- Card Download -----------------------
+function downloadCard() {
+    const card = document.getElementById("birthdayCard");
+    card.style.opacity = '1';
+    card.style.transform = 'translateY(0)';
+    html2canvas(card).then(canvas => {
+        const link = document.createElement("a");
+        link.download = "Birthday_Card.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+    }).catch(err => {
+        alert("Unable to download as PNG.");
+        console.error(err);
+    });
+}
+</script>
+
+</body>
+</html>
