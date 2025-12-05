@@ -11,3 +11,4 @@ Current project count:
  * age-calculator -> age-calculator.html
  * image-slider -> image-slider.html
  * height-converter -> height-converter.html
+ * text-to-code -> text-to-code.html
