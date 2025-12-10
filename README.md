@@ -12,3 +12,4 @@ Current project count:
  * image-slider -> image-slider.html
  * height-converter -> height-converter.html
  * text-to-code -> text-to-code.html
+ * tip-calculator -> tip-calculator.html
