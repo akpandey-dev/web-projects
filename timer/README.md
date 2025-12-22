@@ -10,7 +10,7 @@ Very beautiful UI, with a black background, white timer screen and red backgroun
     * Plays audio once the time is up.
     * Custom audio selection option.
     * Three buttons two of which perform all functions.
-    * One button if for audio selection.
+    * One button is for audio selection.
     * Holding the third(audio selection) button removes the custom audio.
 
     

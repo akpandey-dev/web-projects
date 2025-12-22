@@ -1,6 +1,8 @@
 # Tic Tac Toe
 
 This is the two player version of the Tic Tac Toe Bot game. Two player can play this game together. The UI is dark themed with black background. The design is responsive on small screens.
+If you want to play against bot, you may visit the following repository:
+        *** TicTacToe_Bot_Web ***
 
 
 ### Main features:
