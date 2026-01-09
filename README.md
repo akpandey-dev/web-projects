@@ -13,3 +13,4 @@ Current project count:
  * height-converter -> height-converter.html
  * text-to-code -> text-to-code.html
  * tip-calculator -> tip-calculator.html
+ * analogue-clock  -> analogue-clock.html
