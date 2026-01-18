@@ -1,4 +1,4 @@
-# Number Guessing game
+# Number Guessing Game
 
 The classic number guessing game with a new and responsive feel.
 Very elegant UI and for different screens.
@@ -6,6 +6,6 @@ Very elegant UI and for different screens.
 
 ### Main features:
     * Light UI.
-    * Not a vast range of numbers, something playable.
+    * Not a vast range of numbers, something really playable.
 
     

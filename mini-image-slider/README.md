@@ -1,4 +1,4 @@
-# Image slider
+# Mini Image slider
 
 An image slider made up with JS, CSS and HTML for slideshowing images.
 Light colour theme.

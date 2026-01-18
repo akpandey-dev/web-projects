@@ -1,4 +1,4 @@
-# URL player.
+# Simple URL Engine
 
 Very simple program to open a given link.
 Simple UI, and gradient shade for playbox.
