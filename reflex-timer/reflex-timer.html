@@ -78,6 +78,18 @@ let bestTime = Infinity;
 let box = null;
 let userScores = [];
 
+    function loactionChanger(){
+    if (box){
+    setTimeout(() => {
+    let left = Math.random() * (mainScreen.clientWidth - 50) + "px";
+    let top = Math.random() * (mainScreen.clientHeight - 50) + "px";
+    box.style.left = left;
+    box.style.top = top;
+    loactionChanger();
+    }, 1000);
+
+    }
+    }
 
 // Spawn a clickable box
 function spawnBox() {
@@ -93,8 +105,11 @@ function spawnBox() {
     box.style.backgroundColor = "#00ff00";
     box.style.cursor = "pointer";
     box.style.backgroundColor = randomColor();
+    box.classList.add("box");
     mainScreen.textContent = ""; // clear "Wait..."
     mainScreen.appendChild(box);
+    loactionChanger()
+
 
     box.addEventListener("click", () => {
         let reactionTime = Date.now() - startTime;

@@ -8,4 +8,5 @@ Two navigation buttons, zero distractions, straight to the point.
 - Reaction time measured precisely in milliseconds
 - Downloadable score history exported as an HTML file
 - Randomly colored boxes appear on the screen to increase difficulty and prevent pattern learning
+- Box change location if not clicked for one second randomly
 
