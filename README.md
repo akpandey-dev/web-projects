@@ -18,3 +18,4 @@ Current project count:
   *  timer                -> timer.html
   *  tip-calculator       -> tip-calculator.html
   *  toss-coin            -> toss-coin.html
+  *  reflex-timer         -> reflex-timer.html

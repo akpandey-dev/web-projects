@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reflex Timer</title>
+<style>
+body {
+    background-color: rgb(51, 49, 49);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 10px;
+    min-height: 100vh;
+    overflow: hidden;
+}
+.all-container {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+h3 {
+    font-size: smaller;
+}
+.screen {
+    width: 100%;
+    height: 70vh;
+    background: #111;
+    border: 2px solid #00ff00;
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    -webkit-user-select: none;
+    user-select: none;
+    color: white;
+    position: relative;
+    margin: 0 0 0 0;
+}
+.navBar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+.navBtn {
+    flex: 1;
+    margin: 0 4px;
+    padding: 10px;
+    background: #1a1a1a;
+    color: white;
+    border: 1px solid #333;
+    cursor: pointer;
+}
+</style>
+</head>
+<body>
+<div class="all-container">
+<h3>Time to test your reflexes</h3>
+<div class="screen">Click "Start" to begin</div>
+<div class="navBar">
+    <button class="navBtn start">Start</button>
+    <button class="navBtn best">Best</button>
+</div>
+</div>
+
+<script>
+let mainScreen = document.querySelector(".screen");
+let startButton = document.querySelector(".start");
+let bestButton = document.querySelector(".best");
+let startTime = 0;
+let bestTime = Infinity;
+let box = null;
+let userScores = [];
+
+
+// Spawn a clickable box
+function spawnBox() {
+    let randomColor = () => {
+    return '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+    };
+    box = document.createElement("div");
+    box.style.position = "absolute";
+    box.style.left = Math.random() * (mainScreen.clientWidth - 50) + "px";
+    box.style.top = Math.random() * (mainScreen.clientHeight - 50) + "px";
+    box.style.width = "40px";
+    box.style.height = "40px";
+    box.style.backgroundColor = "#00ff00";
+    box.style.cursor = "pointer";
+    box.style.backgroundColor = randomColor();
+    mainScreen.textContent = ""; // clear "Wait..."
+    mainScreen.appendChild(box);
+
+    box.addEventListener("click", () => {
+        let reactionTime = Date.now() - startTime;
+        if (reactionTime < bestTime) bestTime = reactionTime;
+        userScores.push(reactionTime);
+        let confirmResult = confirm(`Your time: ${reactionTime} ms \nDo you want to try again?`);
+        if (!confirmResult) {
+            let printPrompt = confirm("Do you want to download all your scores in a html file?");
+            if (printPrompt) {
+                let scoresHtml = `<html><head><title>Reflex Timer Scores</title></head><body><h2>Your Reflex Timer Scores</h2><ul>`;
+                userScores.forEach((score, index) => {
+                    scoresHtml += `<li>Attempt ${index + 1}: ${score} ms</li>`;
+                });
+                scoresHtml += `</ul></body></html>`;
+                let blob = new Blob([scoresHtml], {type: 'text/html'});
+                let link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'reflex_timer_scores.html';
+                link.click();
+            }
+            mainScreen.textContent = "Click 'Start' to begin";
+        } else {
+            mainScreen.textContent = "Wait...";
+            const delay = Math.random() * 2000 + 1000; // 1-3 seconds
+            setTimeout(() => {
+                startTime = Date.now();
+                spawnBox();
+            }, delay);
+        }
+        mainScreen.removeChild(box);
+        box = null;
+    });
+}
+
+// Start button behavior
+startButton.addEventListener("click", () => {
+    if (box) return; // prevent multiple boxes
+    mainScreen.textContent = "Wait...";
+    const delay = Math.random() * 2000 + 1000; // 1-3 seconds
+    setTimeout(() => {
+        startTime = Date.now();
+        spawnBox();
+    }, delay);
+});
+
+// Best time button
+bestButton.addEventListener("click", () => {
+    if (bestTime === Infinity) alert("No record yet!");
+    else alert(`Best time: ${bestTime} ms`);
+});
+</script>
+</body>
+</html>
