@@ -4,19 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Reflex Timer</title>
+
 <style>
 body {
     background-color: rgb(51, 49, 49);
     color: white;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
+    min-height: 100vh;
     margin: 0;
     padding: 10px;
-    min-height: 100vh;
     overflow: hidden;
 }
+
 .all-container {
     width: 100%;
     max-width: 100%;
@@ -25,29 +26,33 @@ body {
     align-items: center;
     gap: 20px;
 }
+
 h3 {
     font-size: smaller;
+    margin-top: 0;
+    margin-bottom: 0;
 }
+
 .screen {
     width: 100%;
-    height: 70vh;
+    height: clamp(200px, 55vh, 500px);
+    min-height: 150px;
     background: #111;
     border: 2px solid #00ff00;
     display: grid;
-    align-items: center;
-    justify-content: center;
+    place-items: center;
     font-size: 1.2rem;
     -webkit-user-select: none;
+    -moz-user-select: none;
     user-select: none;
-    color: white;
     position: relative;
-    margin: 0 0 0 0;
 }
+
 .navBar {
     width: 100%;
     display: flex;
-    justify-content: space-between;
 }
+
 .navBtn {
     flex: 1;
     margin: 0 4px;
@@ -59,106 +64,144 @@ h3 {
 }
 </style>
 </head>
+
 <body>
 <div class="all-container">
-<h3>Time to test your reflexes</h3>
-<div class="screen">Click "Start" to begin</div>
-<div class="navBar">
-    <button class="navBtn start">Start</button>
-    <button class="navBtn best">Best</button>
-</div>
+    <h3>Time to test your reflexes</h3>
+
+    <div class="screen">Click "Start" to begin</div>
+
+    <div class="navBar">
+        <button class="navBtn start">Start</button>
+        <button class="navBtn best">Best</button>
+    </div>
 </div>
 
 <script>
-let mainScreen = document.querySelector(".screen");
-let startButton = document.querySelector(".start");
-let bestButton = document.querySelector(".best");
+const screen = document.querySelector(".screen");
+const startBtn = document.querySelector(".start");
+const bestBtn = document.querySelector(".best");
+
+let box = null;
 let startTime = 0;
 let bestTime = Infinity;
-let box = null;
-let userScores = [];
+let scores = [];
 
-    function loactionChanger(){
-    if (box){
-    setTimeout(() => {
-    let left = Math.random() * (mainScreen.clientWidth - 50) + "px";
-    let top = Math.random() * (mainScreen.clientHeight - 50) + "px";
-    box.style.left = left;
-    box.style.top = top;
-    loactionChanger();
-    }, 1000);
+let idleTimer = null;
+let moveInterval = null;
 
-    }
-    }
+/* ---------- helpers ---------- */
 
-// Spawn a clickable box
-function spawnBox() {
-    let randomColor = () => {
-    return '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
-    };
-    box = document.createElement("div");
-    box.style.position = "absolute";
-    box.style.left = Math.random() * (mainScreen.clientWidth - 50) + "px";
-    box.style.top = Math.random() * (mainScreen.clientHeight - 50) + "px";
-    box.style.width = "40px";
-    box.style.height = "40px";
-    box.style.backgroundColor = "#00ff00";
-    box.style.cursor = "pointer";
-    box.style.backgroundColor = randomColor();
-    box.classList.add("box");
-    mainScreen.textContent = ""; // clear "Wait..."
-    mainScreen.appendChild(box);
-    loactionChanger()
-
-
-    box.addEventListener("click", () => {
-        let reactionTime = Date.now() - startTime;
-        if (reactionTime < bestTime) bestTime = reactionTime;
-        userScores.push(reactionTime);
-        let confirmResult = confirm(`Your time: ${reactionTime} ms \nDo you want to try again?`);
-        if (!confirmResult) {
-            let printPrompt = confirm("Do you want to download all your scores in a html file?");
-            if (printPrompt) {
-                let scoresHtml = `<html><head><title>Reflex Timer Scores</title></head><body><h2>Your Reflex Timer Scores</h2><ul>`;
-                userScores.forEach((score, index) => {
-                    scoresHtml += `<li>Attempt ${index + 1}: ${score} ms</li>`;
-                });
-                scoresHtml += `</ul></body></html>`;
-                let blob = new Blob([scoresHtml], {type: 'text/html'});
-                let link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = 'reflex_timer_scores.html';
-                link.click();
-            }
-            mainScreen.textContent = "Click 'Start' to begin";
-        } else {
-            mainScreen.textContent = "Wait...";
-            const delay = Math.random() * 2000 + 1000; // 1-3 seconds
-            setTimeout(() => {
-                startTime = Date.now();
-                spawnBox();
-            }, delay);
-        }
-        mainScreen.removeChild(box);
-        box = null;
-    });
+function randomColor() {
+    return "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0");
 }
 
-// Start button behavior
-startButton.addEventListener("click", () => {
-    if (box) return; // prevent multiple boxes
-    mainScreen.textContent = "Wait...";
-    const delay = Math.random() * 2000 + 1000; // 1-3 seconds
-    setTimeout(() => {
-        startTime = Date.now();
-        spawnBox();
-    }, delay);
+function randomPosition() {
+    return {
+        left: Math.random() * (screen.clientWidth - 50) + "px",
+        top: Math.random() * (screen.clientHeight - 50) + "px"
+    };
+}
+
+function clearMovement() {
+    clearTimeout(idleTimer);
+    clearInterval(moveInterval);
+    idleTimer = null;
+    moveInterval = null;
+}
+
+/* ---------- movement logic ---------- */
+
+function startIdleCountdown() {
+    idleTimer = setTimeout(() => {
+        startMovingBox();
+    }, 1000); // 1s inactivity threshold
+}
+
+function startMovingBox() {
+    moveInterval = setInterval(() => {
+        if (!box) return;
+        const { left, top } = randomPosition();
+        box.style.left = left;
+        box.style.top = top;
+    }, 1000); // rapid movement
+}
+
+/* ---------- game logic ---------- */
+
+function spawnBox() {
+    box = document.createElement("div");
+    box.style.position = "absolute";
+    box.style.width = "40px";
+    box.style.height = "40px";
+    box.style.cursor = "pointer";
+    box.style.backgroundColor = randomColor();
+
+    const { left, top } = randomPosition();
+    box.style.left = left;
+    box.style.top = top;
+
+    screen.textContent = "";
+    screen.appendChild(box);
+
+    startTime = Date.now();
+    startIdleCountdown();
+
+    box.addEventListener("click", handleClick);
+}
+
+function handleClick() {
+    clearMovement();
+
+    const reactionTime = Date.now() - startTime;
+    scores.push(reactionTime);
+    if (reactionTime < bestTime) bestTime = reactionTime;
+
+    const retry = confirm(`Your time: ${reactionTime} ms\nTry again?`);
+
+    screen.removeChild(box);
+    box = null;
+
+    if (!retry) {
+        const download = confirm("Download all scores as HTML?");
+        if (download) downloadScores();
+        screen.textContent = "Click 'Start' to begin";
+        return;
+    }
+
+    screen.textContent = "Wait...";
+    setTimeout(spawnBox, Math.random() * 2000 + 1000);
+}
+
+function downloadScores() {
+    let html = `
+    <html>
+    <head><title>Reflex Timer Scores</title></head>
+    <body>
+        <h2>Your Reflex Timer Scores</h2>
+        <ul>
+            ${scores.map((s, i) => `<li>Attempt ${i + 1}: ${s} ms</li>`).join("")}
+        </ul>
+    </body>
+    </html>`;
+
+    const blob = new Blob([html], { type: "text/html" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "reflex_timer_scores.html";
+    link.click();
+}
+
+/* ---------- buttons ---------- */
+
+startBtn.addEventListener("click", () => {
+    if (box) return;
+    screen.textContent = "Wait...";
+    setTimeout(spawnBox, Math.random() * 2000 + 1000);
 });
 
-// Best time button
-bestButton.addEventListener("click", () => {
-    if (bestTime === Infinity) alert("No record yet!");
-    else alert(`Best time: ${bestTime} ms`);
+bestBtn.addEventListener("click", () => {
+    alert(bestTime === Infinity ? "No record yet!" : `Best time: ${bestTime} ms`);
 });
 </script>
 </body>
