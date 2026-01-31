@@ -150,13 +150,13 @@
             resetButton.style.backgroundColor = "#FF9999";
             setTimeout(() => resetButton.style.backgroundColor = "", 500);
 
-            resultDisplay.innerHTML = "...";
+            resultDisplay.textContent = "...";
             resultDisplay.style.color = "blue";
             coinImg.src = "https://i.ytimg.com/vi/IegTINMrhXE/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDEkxREAMyAzjJIAu16swOT2MFGPQ";
 
             document.getElementById("headsInput").value = '';
             document.getElementById("tailsInput").value = '';
-            document.getElementById("winnerText").innerHTML = '__________';
+            document.getElementById("winnerText").textContent = '__________';
             document.getElementById("winnerText").style.color = '#0cff00';
         }
 
@@ -177,20 +177,20 @@
 
                 if (tossResult === 1) {
                     coinImg.src = "https://i.pinimg.com/736x/df/e7/34/dfe734cfa015acd356bac207f49ed5fc.jpg";
-                    resultDisplay.innerHTML = "TAILS WON!";
+                    resultDisplay.textContent = "TAILS WON!";
                     if(document.getElementById("tailsInput").value.trim() === ""){
                         tailName="TAILS";
                     }   
-                    winnerDisplay.innerHTML = "WINNER IS " + tailName.toUpperCase();
+                    winnerDisplay.textContent = "WINNER IS " + tailName.toUpperCase();
                     winnerDisplay.style.color = "red";
 
                 } else {
                     coinImg.src = "https://thumbs.dreamstime.com/b/india-one-rupee-coin-white-isolated-background-231225188.jpg";
-                    resultDisplay.innerHTML = "HEADS WON!";
+                    resultDisplay.textContent = "HEADS WON!";
                     if(document.getElementById("headsInput").value.trim() === ""){
                         headName ="HEADS";
                     }
-                    winnerDisplay.innerHTML = "WINNER IS " + headName.toUpperCase();
+                    winnerDisplay.textContent = "WINNER IS " + headName.toUpperCase();
                     winnerDisplay.style.color = "green";
 
                 }

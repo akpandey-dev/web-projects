@@ -146,10 +146,10 @@ function checkNumber() {
     let userGuess = parseFloat(document.getElementById("inputField").value);
 
     if (userGuess === targetNumber) {
-        document.getElementById("resultDisplay").innerHTML = " You won ! ";
+        document.getElementById("resultDisplay").textContent = " You won ! ";
         document.getElementById("inputField").style.backgroundColor = "#ccffcc";
     } else {
-        document.getElementById("resultDisplay").innerHTML = " You lost! Number = " + targetNumber + ".";
+        document.getElementById("resultDisplay").textContent = " You lost! Number = " + targetNumber + ".";
         document.getElementById("inputField").style.backgroundColor = "#ff4c4c";
     }
 
@@ -165,7 +165,7 @@ function checkNumber() {
 
 function resetGame() {
     document.getElementById("inputField").value = '';
-    document.getElementById("resultDisplay").innerHTML = '...';
+    document.getElementById("resultDisplay").textContent = '...';
 }
 </script>
 </body>

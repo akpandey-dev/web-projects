@@ -301,7 +301,7 @@ function playMove(playerChoice) {
         document.getElementById("audioLose").play();
     }
 
-    document.getElementById("resultText").innerHTML = resultMessage;
+    document.getElementById("resultText").textContent = resultMessage;
     document.getElementById("resultText").style.backgroundColor = resultColor;
     updateScoreDisplay();
 }
