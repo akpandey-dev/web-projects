@@ -1,31 +1,29 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />   
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Toss Coin</title>
+    <meta charset="UTF-8" />
+    <title>Coin Toss Simulator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <style>
         body {
-            display: flexbox;
+            display: flex;
+            flex-direction: column;
             background-color: #0cff00;
             font-family: monospace;
             font-size: x-large;
             border-style: ridge;
             border-color: darkolivegreen;
             border-width: 20px;
+            height: 90vh;
+            overflow-y: hidden;
+            overflow-x: auto;
         }
 
         .center-container {
-            align-content: center;
             justify-items: center;
-
         }
-
-        #coinImage {
-            height: 20vh;
-            width: 25vh;
-        }
+    
 
         #resultText {
             transition: color 0.8s ease, font-family 0.5s ease;
@@ -46,16 +44,22 @@
         .action-container,
         .reset-container {
             align-self: center;
-            justify-self: center;
             justify-items: center;
-            justify-content: center;
         }
-
+        
+        .coin-display{
+            display: flex;
+            flex-direction: column;
+            height: 20vh;
+            width: 25vh;
+        }
+        
         .coin-frame {
             border-style: solid;
             border-color: brown;
             border-radius: 50%;
             border-width: 7px;
+
         }
 
         .input-section {
@@ -73,7 +77,7 @@
             justify-content: center;
             display: flex;
             font-family: monospace;
-            color: red;
+            color: #0cff00;
         }
 
         #headsInput,
@@ -83,16 +87,32 @@
             background-color: yellow;
             border-style: none;
             border-width: 0px;
+            height: 5vh;
+            width: clamp(25vw, 30vw, 35vw);
+            border-bottom-left-radius: 5vw;
+            border-top-right-radius: 5vw;
+            text-align: center;
+            cursor: pointer;
+            caret-color: black;
+             transition: background-color 0.3s ease, transform 0.2s ease;
+            appearance: none;
+            outline: none;
         }
+        .nameInput:hover,
+        .nameInput:focus {
+            background: linear-gradient(135deg, white, yellow) !important;
+            box-shadow: 5px 5px 5px black;
+        }
+
     </style>
 </head>
 
 <body>
 
     <div class="center-container">
-        <h1>LET'S TOSS</h1>
+        <h1>COIN TOSS</h1>
         <div class="coin-display">
-            <img id="coinImage" class="coin-frame" alt="Image not found..."
+            <img alt="Image not found..." id="coinImage" class="coin-frame"
                 src="https://i.ytimg.com/vi/IegTINMrhXE/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDEkxREAMyAzjJIAu16swOT2MFGPQ">
         </div>
     </div>
@@ -107,8 +127,8 @@
     </div>
 
     <div class="input-section">
-        <input id="headsInput" placeholder="HEADS">
-        <input id="tailsInput" placeholder="TAILS">
+        <input id="headsInput" class="nameInput" placeholder="HEADS">
+        <input id="tailsInput" class="nameInput" placeholder="TAILS">
     </div>
 
     <div class="status-section">
@@ -116,6 +136,16 @@
     </div>
 
     <script>
+
+        function randomColor(){
+            const r = Math.floor(Math.random() * 256);
+            const g = Math.floor(Math.random() * 256);
+            const b = Math.floor(Math.random() * 256);
+            const rgb = `rgb(${r}, ${g}, ${b})`;
+            return rgb;
+        }
+
+
         function handleReset() {
             const resetButton = document.getElementById("resetBtn");
             const resultDisplay = document.getElementById("resultText");
@@ -131,6 +161,7 @@
             document.getElementById("headsInput").value = '';
             document.getElementById("tailsInput").value = '';
             document.getElementById("winnerText").innerHTML = '__________';
+            document.getElementById("winnerText").style.color = '#0cff00';
         }
 
         function handleToss() {
@@ -144,25 +175,31 @@
 
             setTimeout(() => {
                 const tossResult = Math.floor(Math.random() * 2);
-                const headName = document.getElementById("headsInput").value;
-                const tailName = document.getElementById("tailsInput").value;
+                let headName = document.getElementById("headsInput").value;
+                let tailName = document.getElementById("tailsInput").value;
                 const winnerDisplay = document.getElementById("winnerText");
 
                 if (tossResult === 1) {
                     coinImg.src = "https://i.pinimg.com/736x/df/e7/34/dfe734cfa015acd356bac207f49ed5fc.jpg";
                     resultDisplay.innerHTML = "TAILS WON!";
-                    winnerDisplay.innerHTML = "WINNER IS " + tailName;
+                    if(document.getElementById("tailsInput").value.trim() === ""){
+                        tailName="TAILS";
+                    }   
+                    winnerDisplay.innerHTML = "WINNER IS " + tailName.toUpperCase();
+                    winnerDisplay.style.color = "red";
+
                 } else {
                     coinImg.src = "https://thumbs.dreamstime.com/b/india-one-rupee-coin-white-isolated-background-231225188.jpg";
                     resultDisplay.innerHTML = "HEADS WON!";
-                    winnerDisplay.innerHTML = "WINNER IS " + headName;
+                    if(document.getElementById("headsInput").value.trim() === ""){
+                        headName ="HEADS";
+                    }
+                    winnerDisplay.innerHTML = "WINNER IS " + headName.toUpperCase();
+                    winnerDisplay.style.color = "green";
+
                 }
 
-                const r = Math.floor(Math.random() * 256);
-                const g = Math.floor(Math.random() * 256);
-                const b = Math.floor(Math.random() * 256);
-                const rgb = `rgb(${r}, ${g}, ${b})`;
-                resultDisplay.style.color = rgb;
+resultDisplay.style.color = randomColor();
 
             }, 1000);
         }
