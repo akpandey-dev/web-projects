@@ -6,7 +6,7 @@ The background is light coloured with black, white and a bit red used for clock.
 
 
 
-### Main features:
+## Main features:
     * Hover effects are added.
     * Colour scheme is designed beautifully.
     * A small name plate on the top inside the clock.

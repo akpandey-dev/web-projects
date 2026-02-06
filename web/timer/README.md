@@ -5,7 +5,7 @@ Contains neary every feature that a timer should have.
 Very beautiful UI, with a black background, white timer screen and red background for digits of the timer.
 
 
-### Main features:
+## Main features:
     * Very clean UI for easy navigation.
     * Plays audio once the time is up.
     * Custom audio selection option.

@@ -5,7 +5,7 @@ If you want to play against bot, you may visit the repository mentioned below:
         *** tic-tac-toe-bot ***
 
 
-### Main features:
+## Main features:
     * Responsive design for different screens.
     * Progress bar to track the progress of both the players.
     * Easy interface for players.

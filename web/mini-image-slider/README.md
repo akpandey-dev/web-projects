@@ -6,7 +6,7 @@ Not meant to replace full featured galleries and image viewers, just an educatio
 
 
 
-### Main features:
+## Main features:
     * Easy user interface and responsive on different screen sizes.
     * Images can be added from device gallery.
     * Small buttons to enhance focus on images.
