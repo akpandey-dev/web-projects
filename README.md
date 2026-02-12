@@ -14,3 +14,4 @@ Current project count:
  * text-to-code -> text-to-code.html
  * tip-calculator -> tip-calculator.html
  * analogue-clock  -> analogue-clock.html
+ * stopwatch -> stopwatch.html
