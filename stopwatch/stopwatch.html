@@ -102,6 +102,17 @@ h3{
     border-radius: 5px;
 }
 
+#digitalClock{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  height: 10vh;
+  margin: 0;
+
+}
+
 </style>
 </head>
 <body>
@@ -109,7 +120,9 @@ h3{
 <h3 id="heading">Stop-Watch</h3>
 <hr id="headingBase">
 
-
+<div id="digitalClock">
+  <output id="clock">00:00:00</output>
+</div>
 
 
 <output id="timeOutput">00:00:00:00</output>
@@ -139,7 +152,23 @@ setInterval(() => {
   const color = `rgb(${r}, ${g}, ${b})`;
   document.getElementById("headingBase").style.backgroundColor = color;
   document.getElementById("heading").style.color = color;
-}, 1000);
+}, 5000);
+
+
+// Clock Setup
+function updateClock(){
+  const time = new Date();
+  const sec = time.getSeconds();
+  const min = time.getMinutes();
+  const hr = time.getHours();
+  document.getElementById("clock").innerText = `
+  ${hr}:${min}:${sec}
+  `;
+  document.getElementById("clock").style.color = "red";
+}
+
+updateClock();
+setInterval(updateClock, 100);
 
 
 // Stopwatch core
