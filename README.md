@@ -18,3 +18,4 @@ Current project count:
  * stopwatch -> stopwatch.html
  * greeting-card -> greeting-card.html
  * timer -> timer.html
+ * reflex-timer -> reflex-timer.html
