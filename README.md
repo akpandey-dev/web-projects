@@ -1,4 +1,4 @@
-# 02-web-projects
+# Web Projects
 
 A compact suite of browser-based utilities and mini-apps — from everyday calculators to classic web games — all written in pure HTML, CSS, and JavaScript. A playground of logic, UI, and creativity.
 
@@ -48,7 +48,7 @@ All projects are organized under the `web/` folder. Each project has its own sub
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/akpandey-dev/02-web-projects.git
+   git clone https://github.com/akpandey-dev/web-projects.git
    ```
 2. Navigate to the folder of your interest.
 3. Open the file directly in a suitable environment.
