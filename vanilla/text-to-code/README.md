@@ -9,3 +9,9 @@ choose can decode.
 Using this text to code program, you can transform your message into code made up of emojis or symbols. That can be decoded only using this program.
  What is everyone gets this program?
  No tension, Just make a custom code map and share it to the only person whom do you want to read your message.
+
+## Main Features
+
+ - Instant text <=> code conversion  
+ - Custom code map support  
+ - Terminal-style UI for a privacy-focused feel

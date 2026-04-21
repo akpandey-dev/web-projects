@@ -1,5 +1,13 @@
 # Coin Toss
 
-At the point where you have two options and have to choose one, tossing the coin helps a lot.
-It has a green background, with options to assign names before toss.
-It has real images of the coin to make this look more realistic.
+When you’re stuck between two choices, a coin toss makes the decision simple.
+
+As physical coins disappear with the rise of digital transactions, **Toss Coin** provides a quick and realistic alternative.  
+It features a clean green interface, allows assigning custom names to **HEADS** and **TAILS**, and uses real coin images for an authentic feel.
+
+## Main Features
+
+- Responsive design across screen sizes  
+- Clean green color theme  
+- Custom labels for HEADS and TAILS  
+- Real coin images for realism
