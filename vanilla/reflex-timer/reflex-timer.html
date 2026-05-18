@@ -10,6 +10,7 @@ body {
     background-color: rgb(51, 49, 49);
     color: white;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
@@ -26,11 +27,19 @@ body {
     align-items: center;
     gap: 20px;
 }
+h1{
+    font-family: fantasy;
+    transition: 5s ease-in-out;
+    cursor: wait;
+}
+
+h1:hover {
+    color: #00ff00;
+}
 
 h3 {
     font-size: smaller;
-    margin-top: 0;
-    margin-bottom: 0;
+    margin: 0;
 }
 
 .screen {
@@ -43,7 +52,6 @@ h3 {
     place-items: center;
     font-size: 1.2rem;
     -webkit-user-select: none;
-    -moz-user-select: none;
     user-select: none;
     position: relative;
 }
@@ -62,13 +70,28 @@ h3 {
     border: 1px solid #333;
     cursor: pointer;
 }
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    }
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 0 15px rgba(255, 255, 255, 1);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    }
+}
 </style>
 </head>
 
 <body>
+    <h1>Reflex Timer</h1>
 <div class="all-container">
     <h3>Time to test your reflexes</h3>
-
     <div class="screen">Click "Start" to begin</div>
 
     <div class="navBar">
@@ -86,19 +109,30 @@ let box = null;
 let startTime = 0;
 let bestTime = Infinity;
 let scores = [];
+let moveCount = 0; 
+
 
 let idleTimer = null;
 let moveInterval = null;
 
+let relocationInterval = 1000;
+let idleTimeout = 1000;
+
+const BOX_SIZE = 40;
+const MIN_RELOCATE = 250;
+const MIN_IDLE = 300;
+
 
 function randomColor() {
-    return "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0");
+    return "#" + Math.floor(Math.random() * 16777215)
+        .toString(16)
+        .padStart(6, "0");
 }
 
 function randomPosition() {
     return {
-        left: Math.random() * (screen.clientWidth - 50) + "px",
-        top: Math.random() * (screen.clientHeight - 50) + "px"
+        left: Math.random() * (screen.clientWidth - BOX_SIZE) + "px",
+        top: Math.random() * (screen.clientHeight - BOX_SIZE) + "px"
     };
 }
 
@@ -109,31 +143,34 @@ function clearMovement() {
     moveInterval = null;
 }
 
-
 function startIdleCountdown() {
-    idleTimer = setTimeout(() => {
-        startMovingBox();
-    }, 1000); 
+    idleTimer = setTimeout(startMovingBox, idleTimeout);
 }
 
 function startMovingBox() {
+    moveCount = 0; 
     moveInterval = setInterval(() => {
         if (!box) return;
         const { left, top } = randomPosition();
         box.style.left = left;
         box.style.top = top;
-    }, 1000); 
+        moveCount++; 
+    }, relocationInterval);
 }
 
 
-
 function spawnBox() {
+    let transitionInterval = relocationInterval / 1000 / 2; 
+    let animationInterval = relocationInterval / 1000 / 2;
+
     box = document.createElement("div");
     box.style.position = "absolute";
-    box.style.width = "40px";
-    box.style.height = "40px";
+    box.style.width = BOX_SIZE + "px";
+    box.style.height = BOX_SIZE + "px";
     box.style.cursor = "pointer";
     box.style.backgroundColor = randomColor();
+    box.style.transition = `left ${transitionInterval}s, top ${transitionInterval}s`;
+    box.style.animation = `pulse ${animationInterval}s infinite`;
 
     const { left, top } = randomPosition();
     box.style.left = left;
@@ -150,14 +187,47 @@ function spawnBox() {
 
 function handleClick() {
     clearMovement();
+    startBtn.textContent = "Start"; 
 
     const reactionTime = Date.now() - startTime;
-    scores.push(reactionTime);
+    scores.push({
+        attempt: scores.length + 1,
+        reactionTime,
+        color: box.style.backgroundColor,
+        relocationInterval,
+        idleTimeout,
+        movesBeforeClick: moveCount 
+
+    });
     if (reactionTime < bestTime) bestTime = reactionTime;
+
+    if (reactionTime <= 500) {
+        relocationInterval -= 100;
+        idleTimeout -= 50;
+    } else if (reactionTime < 1000) {
+        relocationInterval -= 50;
+        idleTimeout -= 25;
+    } else if (reactionTime < 1500) {
+        relocationInterval -= 25;
+    } else if (reactionTime > 2500) {
+        relocationInterval += 100;
+        idleTimeout += 50;
+    } else if (reactionTime > 2000) {
+        relocationInterval += 50;
+        idleTimeout += 25;
+    } else if (reactionTime > 1500) {
+        relocationInterval += 25;
+    }
+
+
+    relocationInterval = Math.max(MIN_RELOCATE, relocationInterval);
+    idleTimeout = Math.max(MIN_IDLE, idleTimeout);
 
     const retry = confirm(`Your time: ${reactionTime} ms\nTry again?`);
 
-    screen.removeChild(box);
+    if (box && box.parentNode === screen) {
+        screen.removeChild(box);
+    }
     box = null;
 
     if (!retry) {
@@ -172,16 +242,34 @@ function handleClick() {
 }
 
 function downloadScores() {
-    let html = `
+    const html = `
     <html>
     <head><title>Reflex Timer Scores</title></head>
     <body>
         <h2>Your Reflex Timer Scores</h2>
-        <ul>
-            ${scores.map((s, i) => `<li>Attempt ${i + 1}: ${s} ms</li>`).join("")}
-        </ul>
+        <table border="1" cellpadding="5" cellspacing="0">
+            <tr>
+                <th>Attempt</th>
+                <th>Reaction Time (ms)</th>
+                <th>Box Color</th>
+                <th>Relocation Interval (ms)</th>
+                <th>Idle Timeout (ms)</th>
+                <th>Moves Before Click</th>
+            </tr>
+                ${scores.map(s => `
+                <tr>
+                    <td>${s.attempt}</td>
+                    <td>${s.reactionTime}</td>
+                    <td style="background:${s.color};color:#fff">${s.color}</td>
+                    <td>${s.relocationInterval}</td>
+                    <td>${s.idleTimeout}</td>
+                    <td>${s.movesBeforeClick}</td>
+                </tr>
+                `).join('')}
+        </table>
     </body>
-    </html>`;
+    </html>
+    `;
 
     const blob = new Blob([html], { type: "text/html" });
     const link = document.createElement("a");
@@ -191,14 +279,42 @@ function downloadScores() {
 }
 
 
+
 startBtn.addEventListener("click", () => {
-    if (box) return;
-    screen.textContent = "Wait...";
-    setTimeout(spawnBox, Math.random() * 2000 + 1000);
+    if (!box) {
+        bestBtn.disabled = true;
+        // Start new game
+        screen.textContent = "Wait...";
+        startBtn.textContent = "Stop";
+        setTimeout(spawnBox, Math.random() * 2000 + 1000);
+        return;
+    }
+    bestBtn.disabled = false;
+    clearMovement();
+    scores.push({
+        attempt: scores.length + 1,
+        reactionTime: "User Interrupted",
+        color: box.style.backgroundColor,
+        relocationInterval,
+        idleTimeout,
+        movesBeforeClick: moveCount
+    });
+
+
+    if (box && box.parentNode === screen) screen.removeChild(box);
+    box = null;
+    startBtn.textContent = "Start";
+
+    const download = confirm("You stopped the level. Download all scores?");
+    if (download) downloadScores();
+    screen.textContent = "Click 'Start' to begin";
 });
 
+
 bestBtn.addEventListener("click", () => {
-    alert(bestTime === Infinity ? "No record yet!" : `Best time: ${bestTime} ms`);
+    alert(bestTime === Infinity
+        ? "No record yet!"
+        : `Best time: ${bestTime} ms`);
 });
 </script>
 </body>
