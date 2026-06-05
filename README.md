@@ -23,8 +23,9 @@ This repository serves both as a learning archive and a rapid-experiment space, 
 All projects are organized under the `vanilla/` folder. Each project has its own subdirectory with source code and documentation.
 
 
-### Current project List:
+### Current project List
 
+#### Vanilla:
 
  * coin-toss -> coin-toss.html
  * calculator -> calculator.html
@@ -41,6 +42,7 @@ All projects are organized under the `vanilla/` folder. Each project has its own
  * greeting-card -> greeting-card.html
  * timer -> timer.html
  * reflex-timer -> reflex-timer.html
+ * compact-text-editor -> compact-text-editor.html
 
  ---
 
