@@ -5,6 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Compact Text Editor</title>
 <style>
+:root{
+    --accent-color: #007bff;
+    --border-light: #ccc;
+
+    --button-bg: black;
+    --button-text: #f9f9f9;
+    --button-hover-bg: #656262;
+
+    --editor-bg: #f9f9f9;
+    --editor-border: #555;
+    --editor-text: black;
+
+    --download-bg: #4caf50;
+    --download-text: white;
+    --download-shadow: rgba(0,0,0,0.3);
+
+    --counter-text: black;
+}
+
 *{
     box-sizing:border-box;
     margin:0;
@@ -12,26 +31,39 @@
 }
 
 body{
-    font-family:Arial,sans-serif;
-    background: white;
-    display:flex;
-    flex-direction:column;
-    align-items: center;
-    height:100vh;
-    border: 2px solid #007bff;
+      position: relative;
+      height: auto;
+      font-family: Arial, sans-serif;
+      padding: 5px;
+      min-height: 95vh;
+      overflow-y: scroll;
+      scrollbar-width: 0px;
+      -ms-overflow-style: none;
+      -webkit-overflow-scrolling: touch;
+      margin: 0 0;
+      height: 100vh;
+      width:100vw;
+      overflow-x: hidden;
+      scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar{
+  display: none;
 }
 
 .container{
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+      text-align: left;
+      justify-self: center;
+      align-self: center;
+      margin: 0;
+      padding: 0;
 }
 
 .heading-container{
     align-self: center;
     justify-self: center;
-    color: #007bff;
+    color: var(--accent-color);
     font-size: clamp(0.8rem, 3vw, 1.5rem);
 }
 
@@ -39,45 +71,40 @@ body{
       border-style: solid;
       margin-top: 5px;
       margin-bottom: 5px;
-      background-color: #007bff;
+      background-color: var(--accent-color);
 }
 
 .toolbar, .format-tab{
     width:100%;
     justify-items: center;
     padding: 1%;
-
 }
-
-
 
 .toolbar-options, .format-options{
     display:flex;
-    gap:8px;
+    gap:4px;
     padding:1%;
-    width: 50vw;
-    border-bottom:1px solid #ccc;
+    border-bottom:1px solid var(--border-light);
     border: solid;
-    background: #007bff;
+    background: var(--accent-color);
     align-items: center;
     justify-content:center;
-    overflow-x: auto;
-    scrollbar-width: thin;
-    scroll-behavior:smooth;
-    background-color: #007bff;
+    background-color: var(--accent-color);
 }
 
 .toolbar button, .format-tab button{
-    cursor:pointer;
-    width: 10vw;
+    width: 7vw;
     height: 4vh;
+    padding: 4px;
     text-align: center;
-    background-color: black;
-    color: #f9f9f9;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    font-size: x-small;
+    cursor: pointer;
 }
 
 .toolbar button:hover, .format-tab button:hover{
-    background:#656262;
+    background: var(--button-hover-bg);
 }
 
 .editor{
@@ -88,57 +115,57 @@ body{
       height: 55vh;
       padding: 20px;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-      background-color: #f9f9f9;
-      border: 8px solid #555;
+      background-color: var(--editor-bg);
+      border: 8px solid var(--editor-border);
       border-radius: 20px;
       text-align: left;
-      color: black;
+      color: var(--editor-text);
       justify-self: center;
       align-self: center;
 }
 
 #download-button{
   position: fixed;
-  bottom: 20px;
+  bottom: 10px;
   right: 10px;
-  padding: 5px 5px;
+  padding: 6px 10px;
   font-size: 15px;
   border-radius: 50%;
-  background-color: #4caf50;
-  color: white;
+  background-color: var(--download-bg);
+  color: var(--download-text);
   border: none;
   cursor: pointer;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  box-shadow: 0 0 10px var(--download-shadow);
 }
 
-    #counter-box {
+#counter-box{
       text-align: left;
       justify-self: center;
       align-self: center;
       display: flex;
-    }
+}
 
-    #word-counter {
-      width: 24vw;
+#word-counter{
+      width: 20vw;
       align-items: baseline;
-      margin-top: 5px;
-      border:2px solid gray;
-      background-color: #007bff;
+      margin-top: 5%;
+      background-color: var(--accent-color);
+      color: var(--counter-text);
       text-align: center;
       margin-right: 1vw;
-    }
+}
 
-    #char-counter {
-      width: 24vw;
+#char-counter{
+      width: 20vw;
       align-items: baseline;
-      margin-top: 5px;
-      border:2px solid gray;
-      background-color: #007bff;
+      margin-top: 5%;
+      background-color: var(--accent-color);
+      color: var(--counter-text);
       text-align: center;
       margin-left: 1vw;
-    }
+}
 
-    .font-control-bar {
+.font-control-bar{
       position: absolute;
       top: 55%;
       right: 0px;
@@ -148,41 +175,46 @@ body{
       gap: 30px;
       z-index: 9999;
       padding: 0px;
-    }
+}
 
-    .font-control-bar input[type="range"],
-    .font-control-bar input[type="color"] {
+.font-control-bar input[type="range"],
+.font-control-bar input[type="color"]{
       writing-mode: vertical-lr;
       width: 20px;
       height: 4%px;
       cursor: pointer;
       border: none;
       outline: none;
-    }
+}
 
-    .font-color-changer {
+.font-color-changer{
       border-radius: 50%;
       width: 20px;
       height: 20px;
       border-style: none;
       margin: 0 0;
       position: sticky;
-    }
+}
 
-    .font-size-changer {
+.font-size-changer{
       transform: rotate(180deg);
-    }
+}
 
-    .font-family{
+.font-family{
       margin: 2px;
       padding: 3px;
       width: 50%;
-      background-color: #007bff;
+      background-color: var(--accent-color);
       border-style: solid;
       text-align: left;
       justify-self: center;
       align-self: center;
-    }
+}
+
+#fontFamily{
+      width: 100%;
+      background-color: var(--accent-color);
+}
 
 
 </style>
@@ -226,7 +258,7 @@ body{
 </div>
 
   <div class="font-family">
-    <select title="Select font family" id="fontFamily" class="font-family">
+    <select title="Select font family" id="fontFamily">
       <option value="inherit">Default</option>
       <option value="Arial">Arial</option>
       <option value="Helvetica">Helvetica</option>
