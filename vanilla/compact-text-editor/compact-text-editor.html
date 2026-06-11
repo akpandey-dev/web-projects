@@ -5,23 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Compact Text Editor</title>
 <style>
+
 :root{
-    --accent-color: #007bff;
-    --border-light: #ccc;
+    --ui-background: #e9e3e3;
+    --ui-panel: #f0f0f0;
 
-    --button-bg: black;
-    --button-text: #f9f9f9;
-    --button-hover-bg: #656262;
+    --ui-accent: #007bff;
 
-    --editor-bg: #f9f9f9;
-    --editor-border: #555;
-    --editor-text: black;
+    --ui-text: #000;
+    --ui-border: #555;
+    --ui-border-light: #ccc;
 
-    --download-bg: #4caf50;
-    --download-text: white;
-    --download-shadow: rgba(0,0,0,0.3);
+    --ui-btn-bg: #c4e388;
+    --ui-btn-hover: #b3d36f;
 
-    --counter-text: black;
+    --ui-editor-bg: #f0f0f0;
+
+    --ui-shadow: rgba(0,0,0,0.3);
 }
 
 *{
@@ -37,14 +37,15 @@ body{
       padding: 5px;
       min-height: 95vh;
       overflow-y: scroll;
-      scrollbar-width: 0px;
       -ms-overflow-style: none;
       -webkit-overflow-scrolling: touch;
-      margin: 0 0;
+      margin: 0;
       height: 100vh;
       width:100vw;
       overflow-x: hidden;
       scrollbar-width: none;
+      background: var(--ui-background);
+      color: var(--ui-text);
 }
 
 html::-webkit-scrollbar,
@@ -63,158 +64,226 @@ body::-webkit-scrollbar{
 .heading-container{
     align-self: center;
     justify-self: center;
-    color: var(--accent-color);
+    color: var(--ui-accent);
     font-size: clamp(0.8rem, 3vw, 1.5rem);
 }
 
 #format-tab-title{
       border-style: solid;
+      border-color: var(--ui-border);
       margin-top: 5px;
       margin-bottom: 5px;
-      background-color: var(--accent-color);
+      background-color: var(--ui-panel);
+      color: var(--ui-text);
+      padding: 4px;
 }
 
-.toolbar, .format-tab{
+.toolbar,
+.format-tab{
     width:100%;
-    justify-items: center;
-    padding: 1%;
+    justify-items:center;
+    padding:1%;
 }
 
-.toolbar-options, .format-options{
+.toolbar-options,
+.format-options{
     display:flex;
     gap:4px;
     padding:1%;
-    border-bottom:1px solid var(--border-light);
-    border: solid;
-    background: var(--accent-color);
-    align-items: center;
+    border:1px solid var(--ui-border);
+    background: var(--ui-panel);
+    align-items:center;
     justify-content:center;
-    background-color: var(--accent-color);
 }
 
-.toolbar button, .format-tab button{
-    width: 7vw;
-    height: 4vh;
-    padding: 4px;
-    text-align: center;
-    background-color: var(--button-bg);
-    color: var(--button-text);
-    font-size: x-small;
-    cursor: pointer;
+.toolbar button,
+.format-tab button{
+    width:7vw;
+    height:4vh;
+    padding:4px;
+    text-align:center;
+    background-color: var(--ui-btn-bg);
+    color: var(--ui-text);
+    border:1px solid var(--ui-border);
+    font-size:x-small;
+    cursor:pointer;
 }
 
-.toolbar button:hover, .format-tab button:hover{
-    background: var(--button-hover-bg);
+.toolbar button:hover,
+.format-tab button:hover{
+    background: var(--ui-btn-hover);
 }
 
 .editor{
-      overflow: auto;
-      resize: none;
-      width: 80vw;
-      max-width: 1000px;
-      height: 55vh;
-      padding: 20px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-      background-color: var(--editor-bg);
-      border: 8px solid var(--editor-border);
-      border-radius: 20px;
-      text-align: left;
-      color: var(--editor-text);
-      justify-self: center;
-      align-self: center;
+      overflow:auto;
+      resize:none;
+      width:80vw;
+      max-width:1000px;
+      height:55vh;
+      padding:20px;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Open Sans","Helvetica Neue",sans-serif;
+      background-color:var(--ui-editor-bg);
+      border:8px solid var(--ui-border);
+      border-radius:20px;
+      text-align:left;
+      color:var(--ui-text);
+      justify-self:center;
+      align-self:center;
 }
 
 #download-button{
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  padding: 6px 10px;
-  font-size: 15px;
-  border-radius: 50%;
-  background-color: var(--download-bg);
-  color: var(--download-text);
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 0 10px var(--download-shadow);
+  position:fixed;
+  bottom:10px;
+  right:10px;
+  padding:6px 10px;
+  font-size:15px;
+  border-radius:50%;
+  background-color:var(--ui-btn-bg);
+  color:var(--ui-text);
+  border:1px solid var(--ui-border);
+  cursor:pointer;
+  box-shadow:0 0 10px var(--ui-shadow);
+}
+
+#download-button:hover{
+    background: var(--ui-btn-hover);
 }
 
 #counter-box{
-      text-align: left;
-      justify-self: center;
-      align-self: center;
-      display: flex;
+      text-align:left;
+      justify-self:center;
+      align-self:center;
+      display:flex;
 }
 
 #word-counter{
-      width: 20vw;
-      align-items: baseline;
-      margin-top: 5%;
-      background-color: var(--accent-color);
-      color: var(--counter-text);
-      text-align: center;
-      margin-right: 1vw;
+      width:20vw;
+      align-items:baseline;
+      margin-top:5%;
+      background-color:var(--ui-panel);
+      color:var(--ui-text);
+      text-align:center;
+      margin-right:1vw;
+      border:1px solid var(--ui-border);
 }
 
 #char-counter{
-      width: 20vw;
-      align-items: baseline;
-      margin-top: 5%;
-      background-color: var(--accent-color);
-      color: var(--counter-text);
-      text-align: center;
-      margin-left: 1vw;
+      width:20vw;
+      align-items:baseline;
+      margin-top:5%;
+      background-color:var(--ui-panel);
+      color:var(--ui-text);
+      text-align:center;
+      margin-left:1vw;
+      border:1px solid var(--ui-border);
 }
 
 .font-control-bar{
-      position: absolute;
-      top: 55%;
-      right: 0px;
-      transform: translateY(-50%);
-      display: flex;
-      flex-direction: column;
-      gap: 30px;
-      z-index: 9999;
-      padding: 0px;
+      position:absolute;
+      top:55%;
+      right:0;
+      transform:translateY(-50%);
+      display:flex;
+      flex-direction:column;
+      gap:30px;
+      z-index:9999;
+      padding:0;
 }
 
 .font-control-bar input[type="range"],
 .font-control-bar input[type="color"]{
-      writing-mode: vertical-lr;
-      width: 20px;
-      height: 4%px;
-      cursor: pointer;
-      border: none;
-      outline: none;
+      writing-mode:vertical-lr;
+      width:20px;
+      height:4%px;
+      cursor:pointer;
+      border:none;
+      outline:none;
 }
 
 .font-color-changer{
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      border-style: none;
-      margin: 0 0;
-      position: sticky;
+      border-radius:50%;
+      width:20px;
+      height:20px;
+      border-style:none;
+      margin:0;
+      position:sticky;
 }
 
 .font-size-changer{
-      transform: rotate(180deg);
+      transform:rotate(180deg);
 }
 
 .font-family{
-      margin: 2px;
-      padding: 3px;
-      width: 50%;
-      background-color: var(--accent-color);
-      border-style: solid;
-      text-align: left;
-      justify-self: center;
-      align-self: center;
+      margin:2px;
+      padding:3px;
+      width:50%;
+      background-color:var(--ui-panel);
+      border:1px solid var(--ui-border);
+      text-align:left;
+      justify-self:center;
+      align-self:center;
 }
 
 #fontFamily{
-      width: 100%;
-      background-color: var(--accent-color);
+      width:100%;
+      background-color:var(--ui-panel);
+      color:var(--ui-text);
+      border:none;
 }
+
+
+  @media (max-width: 800px) {
+    .editor {
+      width: 80vw;
+      height: 50vh;
+      border-radius: 10px;
+    }
+    #heading-container{
+      font-size: xx-large;
+    }
+    
+  }
+  @media (max-width: 500px) {
+    .editor {
+      width: 80vw;
+      height: 50vh;
+      border-width: 5px;
+      border-radius: 8px;
+    }
+    #heading-container{
+      font-size: x-large;
+    }
+  }
+
+   @media (max-width: 400px) {
+    .editor {
+      width: 80vw;
+      height: 50vh;
+      border-radius: 5px;
+    }
+    #heading-container{
+      font-size: large;
+    }
+   }
+
+   @media (max-width: 300px) {
+    .editor {
+      width: 80vw;
+      height: 50vh;
+      border-width: 2px;
+      border: none;
+      background-color: var(--ui-panel);
+    }
+    #heading-container{
+      font-size: medium;
+    }
+   }
+     @media (min-width: 768px) {
+    .editor {
+      width: 60vw;
+      height: 50vh;
+    }
+  }
 
 
 </style>
