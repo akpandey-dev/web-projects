@@ -52,6 +52,11 @@ All projects are organized under the `vanilla/` folder. Each project has its own
 2. Navigate to the folder of your interest.
 3. Open the file directly in a suitable environment.
 
+### Live Demo
+
+Try it live here:
+> https://akpandey-dev.github.io/web-projects
+
 ---
 
 ## License
